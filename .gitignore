@@ -3,3 +3,10 @@ docker/traefik/certs/*
 
 # Cloudflare Tunnel credentials
 docker/cloudflared/credentials.json
+
+
+group_vars/all/vault.yml
+*.pem
+*.key
+*.json
+certs/

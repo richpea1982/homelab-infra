@@ -1,0 +1,17 @@
+---
+- name: Create global Docker networks
+  community.docker.docker_network:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - CF-net
+    - management_net
+    - vaultwarden_net
+    - richweb_net
+    - richweb_backend
+    - hantaweb_net
+    - hantaweb_backend
+    - petitsanglais_net
+    - petitsanglais_backend
+    - esperance_net
+    - esperance_backend
