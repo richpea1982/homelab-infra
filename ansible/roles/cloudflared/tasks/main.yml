@@ -1,0 +1,22 @@
+- name: Install cloudflared
+  ansible.builtin.apt:
+    name: cloudflared
+    state: present
+
+- name: Create cloudflared directory
+  ansible.builtin.file:
+    path: /etc/cloudflared
+    state: directory
+    mode: '0755'
+
+- name: Copy cloudflared config
+  ansible.builtin.template:
+    src: config.yml.j2
+    dest: /etc/cloudflared/config.yml
+    mode: '0644'
+
+- name: Copy tunnel credentials
+  ansible.builtin.copy:
+    src: credentials.json
+    dest: /etc/cloudflared/credentials.json
+    mode: '0600'

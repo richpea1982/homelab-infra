@@ -1,0 +1,5 @@
+# Traefik certs (Cloudflare Origin)
+docker/traefik/certs/*
+
+# Cloudflare Tunnel credentials
+docker/cloudflared/credentials.json
