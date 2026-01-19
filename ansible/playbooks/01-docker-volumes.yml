@@ -1,0 +1,10 @@
+---
+- name: Create global Docker volumes
+  hosts: srv2
+  become: true
+
+  vars_files:
+    - ../group_vars/all/vault.yml
+
+  roles:
+    - docker-volumes
