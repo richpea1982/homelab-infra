@@ -1,0 +1,9 @@
+---
+- name: Configure Docker Host
+  hosts: docker-host
+  become: true
+
+  roles:
+    - docker
+    - traefik
+    - cloudflared
