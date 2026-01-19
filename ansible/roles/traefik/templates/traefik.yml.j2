@@ -1,0 +1,26 @@
+api:
+  dashboard: true
+  insecure: false
+
+entryPoints:
+  websecure:
+    address: ":443"
+
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    directory: /dynamic
+    watch: true
+
+log:
+  level: INFO
+  filePath: /logs/traefik.log
+
+accessLog:
+  filePath: /logs/access.log
+
+#tls:
+#  certificates:
+#    - certFile: /certs/origin.pem
+#      keyFile: /certs/origin.key

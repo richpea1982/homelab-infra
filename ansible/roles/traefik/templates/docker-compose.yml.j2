@@ -1,0 +1,51 @@
+services:
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    restart: always
+
+    ports:
+      - "443:443"
+
+    networks:
+      - CF-net
+      - management_net
+      - esperance_net
+      - hantaweb_net
+      - petitsanglais_net
+      - richweb_net
+      - vaultwarden_net
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.pearsalls.online`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/traefik/traefik.yml:/traefik.yml:ro
+      - /opt/traefik/dynamic:/dynamic:ro
+      - /opt/traefik/certs:/certs:ro
+      - /opt/traefik/logs:/logs
+
+    command:
+      - "--configFile=/traefik.yml"
+
+networks:
+  CF-net:
+    external: true
+  management_net:
+    external: true
+  esperance_net:
+    external: true
+  hantaweb_net:
+    external: true
+  petitsanglais_net:
+    external: true
+  richweb_net:
+    external: true
+  vaultwarden_net:
+    external: true
