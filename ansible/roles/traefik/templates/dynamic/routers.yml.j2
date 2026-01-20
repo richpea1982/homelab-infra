@@ -6,3 +6,5 @@ http:
         - websecure
       service: api@internal
       tls: {}
+      middlewares:
+        - security-chain

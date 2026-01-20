@@ -1,0 +1,7 @@
+---
+crowdsec_collections:
+  - crowdsecurity/traefik
+  - crowdsecurity/linux
+  - crowdsecurity/ssh
+
+crowdsec_timezone: "Europe/Paris"

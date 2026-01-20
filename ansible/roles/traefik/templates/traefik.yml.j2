@@ -20,7 +20,8 @@ log:
 accessLog:
   filePath: /logs/access.log
 
-#tls:
-#  certificates:
-#    - certFile: /certs/origin.pem
-#      keyFile: /certs/origin.key
+experimental:
+  plugins:
+    crowdsec-bouncer:
+      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      version: v1.3.0

@@ -18,6 +18,8 @@ services:
 
     labels:
       - "traefik.enable=true"
+
+      # Dashboard router
       - "traefik.http.routers.traefik.rule=Host(`traefik.pearsalls.online`)"
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.tls=true"
@@ -33,6 +35,24 @@ services:
 
     command:
       - "--configFile=/traefik.yml"
+
+  crowdsec:
+    image: crowdsecurity/crowdsec:latest
+    container_name: crowdsec
+    restart: always
+
+    networks:
+      - management_net
+
+    volumes:
+      - /opt/traefik/logs:/var/log/traefik:ro
+      - /opt/crowdsec/data:/var/lib/crowdsec/data
+      - /opt/crowdsec/config/acquis.yaml:/etc/crowdsec/acquis.yaml
+      - /opt/crowdsec/config/profiles.yaml:/etc/crowdsec/profiles.yaml
+
+    environment:
+      - COLLECTIONS=crowdsecurity/traefik
+      - TZ=Europe/Paris
 
 networks:
   CF-net:

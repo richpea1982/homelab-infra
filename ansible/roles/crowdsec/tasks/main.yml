@@ -1,0 +1,39 @@
+---
+- name: Create CrowdSec base directory
+  ansible.builtin.file:
+    path: /opt/crowdsec
+    state: directory
+    mode: '0755'
+
+- name: Create CrowdSec config directory
+  ansible.builtin.file:
+    path: /opt/crowdsec/config
+    state: directory
+    mode: '0755'
+
+- name: Create CrowdSec data directory
+  ansible.builtin.file:
+    path: /opt/crowdsec/data
+    state: directory
+    mode: '0755'
+
+# -----------------------------
+# CONFIG FILES
+# -----------------------------
+- name: Deploy acquis.yaml
+  ansible.builtin.template:
+    src: acquis.yaml.j2
+    dest: /opt/crowdsec/config/acquis.yaml
+    mode: '0644'
+
+- name: Deploy profiles.yaml
+  ansible.builtin.template:
+    src: profiles.yaml.j2
+    dest: /opt/crowdsec/config/profiles.yaml
+    mode: '0644'
+
+# -----------------------------
+# NOTE: No docker-compose here
+# CrowdSec container is managed
+# by the Traefik role.
+# -----------------------------

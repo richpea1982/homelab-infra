@@ -1,0 +1,15 @@
+http:
+  middlewares:
+    crowdsec-bouncer:
+      plugin:
+        crowdsec-bouncer:
+          crowdsecLapiScheme: http
+          crowdsecLapiHost: crowdsec:8080
+          crowdsecLapiKey: "{{ crowdsec_bouncer_key }}"
+          forwardedHeadersTrustedIPs:
+            - "127.0.0.1/32"
+            - "10.0.0.0/8"
+    security-chain:
+      chain:
+        middlewares:
+          - crowdsec-bouncer

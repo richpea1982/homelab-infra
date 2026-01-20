@@ -43,6 +43,11 @@
           - certFile: /certs/origin.pem
             keyFile: /certs/origin.key
 
+- name: Deploy CrowdSec plugin middleware
+  ansible.builtin.template:
+    src: dynamic/crowdsec.yml.j2
+    dest: /opt/traefik/dynamic/crowdsec.yml
+    mode: '0644'
 # -----------------------------
 # CERTIFICATES
 # -----------------------------

@@ -1,0 +1,12 @@
+---
+- name: Deploy full edge stack on srv2
+  hosts: srv2
+  become: true
+
+  vars_files:
+    - ../group_vars/all/vault.yml
+
+  roles:
+    - traefik
+    - cloudflared
+    - crowdsec
