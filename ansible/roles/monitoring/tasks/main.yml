@@ -1,0 +1,96 @@
+---
+# roles/monitoring/tasks/main.yml
+
+- name: Ensure monitoring network exists
+  community.docker.docker_network:
+    name: monitoring_net
+    state: present
+
+- name: Ensure monitoring volumes exist
+  community.docker.docker_volume:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - prometheus_data
+    - loki_data
+    - loki_wal
+    - grafana_data
+
+- name: Create monitoring directory structure
+  ansible.builtin.file:
+    path: "/opt/monitoring/{{ item }}"
+    state: directory
+    mode: '0755'
+  loop:
+    - prometheus
+    - loki
+    - promtail
+    - grafana/provisioning/datasources
+    - grafana/provisioning/dashboards
+
+# -----------------------------
+# CONFIG DEPLOYMENT (with notify)
+# -----------------------------
+
+- name: Deploy Prometheus configuration
+  ansible.builtin.template:
+    src: prometheus.yml.j2
+    dest: /opt/monitoring/prometheus/prometheus.yml
+    mode: '0644'
+  notify: restart monitoring
+
+- name: Deploy Loki configuration
+  ansible.builtin.template:
+    src: loki-config.yml.j2
+    dest: /opt/monitoring/loki/loki-config.yml
+    mode: '0644'
+  notify: restart monitoring
+
+- name: Deploy Promtail configuration
+  ansible.builtin.template:
+    src: promtail-config.yml.j2
+    dest: /opt/monitoring/promtail/promtail-config.yml
+    mode: '0644'
+  notify: restart monitoring
+
+- name: Deploy Grafana datasource provisioning
+  ansible.builtin.template:
+    src: grafana-datasources.yml.j2
+    dest: /opt/monitoring/grafana/provisioning/datasources/datasources.yml
+    mode: '0644'
+  notify: restart monitoring
+
+- name: Deploy monitoring stack docker-compose file
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: /opt/monitoring/docker-compose.yml
+    mode: '0644'
+  notify: restart monitoring
+
+# -----------------------------
+# LOKI VOLUME INITIALIZATION
+# -----------------------------
+
+- name: Ensure Loki volume directories exist
+  community.docker.docker_container:
+    name: loki-init
+    image: alpine:latest
+    user: "0:0"
+    command: >
+      sh -c "mkdir -p /loki/index /loki/index_cache /loki/chunks /wal &&
+             chown -R 10001:10001 /loki /wal"
+    volumes:
+      - loki_data:/loki
+      - loki_wal:/wal
+    state: started
+    restart_policy: "no"
+  register: loki_init_result
+
+# -----------------------------
+# START STACK
+# -----------------------------
+
+- name: Start monitoring stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/monitoring
+    state: present

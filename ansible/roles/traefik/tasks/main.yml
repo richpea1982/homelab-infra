@@ -72,7 +72,12 @@
     dest: /opt/traefik/docker-compose.yml
     mode: '0644'
 
-- name: Start Traefik via Docker Compose
-  ansible.builtin.command:
-    cmd: docker compose up -d
-    chdir: /opt/traefik
+- name: restart monitoring
+  community.docker.docker_compose_v2:
+    project_src: /opt/traefik
+    state: restarted
+
+- name: Start monitoring stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/traefik
+    state: present

@@ -1,0 +1,12 @@
+---
+# Default ports for monitoring stack
+prometheus_port: 9090
+cadvisor_port: 8080
+loki_port: 3100
+grafana_port: 3000
+
+# Loki retention period (7 days by default)
+loki_retention: "168h"
+
+# Traefik metrics endpoint host (can be overridden)
+traefik_host: "{{ ansible_default_ipv4.address }}"

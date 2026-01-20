@@ -1,0 +1,38 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://{{ ansible_default_ipv4.address }}:3100/loki/api/v1/push
+
+scrape_configs:
+
+  # Docker container logs
+  - job_name: docker
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: docker
+          __path__: /var/lib/docker/containers/*/*.log
+
+  # Traefik logs
+  - job_name: traefik
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: traefik
+          __path__: /var/log/traefik/*.log
+
+  # CrowdSec logs (optional, safe to leave even if not present)
+  - job_name: crowdsec
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: crowdsec
+          __path__: /var/log/crowdsec/*.log

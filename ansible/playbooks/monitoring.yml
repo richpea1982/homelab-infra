@@ -1,0 +1,10 @@
+---
+- name: Deploy monitoring stack
+  hosts: monitoring
+  become: true
+
+  vars_files:
+    - ../group_vars/all/vault.yml
+
+  roles:
+    - monitoring
