@@ -39,18 +39,6 @@
     proxied: true
     api_token: "{{ CLOUDFLARE_API_DNS_TOKEN }}"
   loop:
-    # egliseesperanceagde.fr
-    - { zone: "egliseesperanceagde.fr", record: "@" }
-    - { zone: "egliseesperanceagde.fr", record: "www" }
-
-    # egliseesperanceagde.org
-    - { zone: "egliseesperanceagde.org", record: "@" }
-    - { zone: "egliseesperanceagde.org", record: "www" }
-
-    # petitsanglaisabeziers.fr
-    - { zone: "petitsanglaisabeziers.fr", record: "@" }
-    - { zone: "petitsanglaisabeziers.fr", record: "www" }
-
     # pearsalls.online (root + wildcard + traefik)
     - { zone: "pearsalls.online", record: "@" }
     - { zone: "pearsalls.online", record: "*" }
