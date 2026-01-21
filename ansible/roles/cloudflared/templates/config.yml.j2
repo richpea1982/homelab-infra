@@ -2,35 +2,15 @@ tunnel: {{ cloudflare_tunnel_id }}
 credentials-file: /etc/cloudflared/{{ cloudflare_tunnel_id }}.json
 
 ingress:
-  # Traefik dashboard
-  - hostname: traefik.pearsalls.online
+{% for name, svc in services.items() if svc.cloudflared_enabled | default(false) %}
+{% for domain in svc.domains %}
+  - hostname: "{{ domain }}"
     service: https://traefik:443
     originRequest:
-      noTLSVerify: true
-
-  # root domain
-  - hostname: "pearsalls.online"
-    service: https://traefik:443
-
-  # wildcard for pearsalls.online
-  - hostname: "*.pearsalls.online"
-    service: https://traefik:443
-
-  # WordPress sites
-  - hostname: "egliseesperanceagde.fr"
-    service: https://traefik:443
-  - hostname: "www.egliseesperanceagde.fr"
-    service: https://traefik:443
-
-  - hostname: "egliseesperanceagde.org"
-    service: https://traefik:443
-  - hostname: "www.egliseesperanceagde.org"
-    service: https://traefik:443
-
-  - hostname: "petitsanglaisabeziers.fr"
-    service: https://traefik:443
-  - hostname: "www.petitsanglaisabeziers.fr"
-    service: https://traefik:443
-
-  # default
+      noTLSVerify: {{ svc.cloudflared_origin_verify | default(false) | lower }}
+{% endfor %}
+{% endfor %}
+  
+ # default
   - service: http_status:404
+

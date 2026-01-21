@@ -12,44 +12,36 @@
     content: "{{ cloudflare_tunnel_credentials }}"
     dest: "/opt/cloudflared/{{ cloudflare_tunnel_id }}.json"
     mode: '0644'
+  notify: restart cloudflared
 
 - name: Deploy Cloudflared config
   template:
     src: config.yml.j2
     dest: /opt/cloudflared/config.yml
     mode: '0644'
+  notify: restart cloudflared
 
 - name: Deploy Cloudflared docker-compose
   template:
     src: docker-compose.yml.j2
     dest: /opt/cloudflared/docker-compose.yml
     mode: '0644'
+  notify: restart cloudflared
 
+- name: Create networks required by Cloudflared
+  community.docker.docker_network:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ services.cloudflared.networks | unique }}"
+
+- name: Create volumes required by Cloudflared
+  community.docker.docker_volume:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ services.cloudflared.volumes | unique }}"
+  
 - name: Start Cloudflared
   community.docker.docker_compose_v2:
     project_src: /opt/cloudflared
     state: present
 
-- name: Create DNS records for all domains
-  community.general.cloudflare_dns:
-    zone: "{{ item.zone }}"
-    record: "{{ item.record }}"
-    type: CNAME
-    value: "{{ cloudflare_tunnel_id }}.cfargotunnel.com"
-    proxied: true
-    api_token: "{{ CLOUDFLARE_API_DNS_TOKEN }}"
-  loop:
-    # pearsalls.online (root + wildcard + traefik)
-    - { zone: "pearsalls.online", record: "@" }
-    - { zone: "pearsalls.online", record: "*" }
-    - { zone: "pearsalls.online", record: "traefik" }
-
-- name: restart monitoring
-  community.docker.docker_compose_v2:
-    project_src: /opt/cloudflared
-    state: restarted
-
-- name: Start monitoring stack
-  community.docker.docker_compose_v2:
-    project_src: /opt/cloudflared
-    state: present

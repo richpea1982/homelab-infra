@@ -5,10 +5,15 @@ services:
     restart: always
     command: tunnel run
     networks:
-      - CF-net
+{% for net in services.cloudflared.networks %}
+      - {{ net }}
+{% endfor %}
     volumes:
       - /opt/cloudflared:/etc/cloudflared
 
 networks:
-  CF-net:
+{% for net in services.cloudflared.networks %}
+  {{ net }}:
     external: true
+{% endfor %}
+

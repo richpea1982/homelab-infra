@@ -1,0 +1,98 @@
+services:
+  root:
+    domains:
+      - "{{ primary_domain }}"
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    networks: []
+    volumes: []
+    traefik_enabled: false
+
+  traefik:
+    networks:
+      - CF_net
+      - internal_net
+    volumes:
+      - traefik_data
+    domains:
+      - "{{ traefik_domain }}"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+
+  cloudflared:
+    networks:
+      - CF_net
+    volumes:
+      - cloudflared_data
+    domains: []
+    traefik_enabled: false
+
+  crowdsec:
+    networks:
+      - management_net
+    volumes:
+      - crowdsec_data
+    domains: []
+    traefik_enabled: false
+
+  grafana:
+    networks:
+      - monitoring_net
+      - internal_net
+    volumes:
+      - grafana_data
+    domains:
+      - "{{ grafana_domain }}"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+
+
+  prometheus:
+    networks:
+      - monitoring_net
+      - internal_net
+    volumes:
+      - prometheus_data
+    domains:
+      - "{{ prometheus_domain }}"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+
+  loki:
+    networks:
+      - monitoring_net
+      - internal_net
+    volumes:
+      - loki_data
+      - loki_wal
+    domains:
+      - "{{ loki_domain }}"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+
+  promtail:
+    networks:
+      - monitoring_net
+    volumes: []
+    domains: []
+    traefik_enabled: false
+
+  cadvisor:
+    networks:
+      - monitoring_net
+    volumes: []
+    domains: []
+    traefik_enabled: false
+
+  node_exporter:
+    networks:
+      - monitoring_net
+    volumes: []
+    domains: []
+    traefik_enabled: false
+
+

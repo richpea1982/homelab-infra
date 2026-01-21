@@ -1,0 +1,11 @@
+docker_volumes:
+  grafana_data: {}
+  prometheus_data: {}
+  loki_data: {}
+  loki_wal: {}
+  mariadb_data: {}
+  vaultwarden_data: {}
+  crowdsec_data: {}
+  traefik_data: {}
+  cloudflared_data: {}
+

@@ -6,32 +6,39 @@ services:
 
     ports:
       - "443:443"
+      - "80:80"
+      - "8080:8080"
 
     networks:
-      - CF-net
-      - management_net
-      - esperance_net
-      - hantaweb_net
-      - petitsanglais_net
-      - richweb_net
-      - vaultwarden_net
+{% for net in services.traefik.networks %}
+      - {{ net }}
+{% endfor %}
 
     labels:
       - "traefik.enable=true"
 
-      # Dashboard router
-      - "traefik.http.routers.traefik.rule=Host(`traefik.pearsalls.online`)"
+{% if services.traefik.traefik_enabled %}
+{% for domain in services.traefik.domains %}
+      - "traefik.http.routers.traefik.rule=Host(`{{ domain }}`)"
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.service=api@internal"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+{% endfor %}
+{% endif %}
 
     volumes:
+      # Required bind mounts (old working config)
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /opt/traefik/traefik.yml:/traefik.yml:ro
       - /opt/traefik/dynamic:/dynamic:ro
       - /opt/traefik/certs:/certs:ro
       - /opt/traefik/logs:/logs
+
+      # ACME storage (named volume)
+{% for vol in services.traefik.volumes %}
+      - {{ vol }}:/data
+{% endfor %}
 
     command:
       - "--configFile=/traefik.yml"
@@ -42,30 +49,33 @@ services:
     restart: always
 
     networks:
-      - management_net
+{% for net in services.crowdsec.networks %}
+      - {{ net }}
+{% endfor %}
 
     volumes:
+{% for vol in services.crowdsec.volumes %}
+      - {{ vol }}:/var/lib/crowdsec/data
+{% endfor %}
       - /opt/traefik/logs:/var/log/traefik:ro
-      - /opt/crowdsec/data:/var/lib/crowdsec/data
-      - /opt/crowdsec/config/acquis.yaml:/etc/crowdsec/acquis.yaml
-      - /opt/crowdsec/config/profiles.yaml:/etc/crowdsec/profiles.yaml
 
     environment:
       - COLLECTIONS=crowdsecurity/traefik
       - TZ=Europe/Paris
 
+{% set all_networks = (services.traefik.networks + services.crowdsec.networks) | unique %}
+
 networks:
-  CF-net:
+{% for net in all_networks %}
+  {{ net }}:
     external: true
-  management_net:
+{% endfor %}
+
+{% set all_volumes = (services.traefik.volumes + services.crowdsec.volumes) | unique %}
+
+volumes:
+{% for vol in all_volumes %}
+  {{ vol }}:
     external: true
-  esperance_net:
-    external: true
-  hantaweb_net:
-    external: true
-  petitsanglais_net:
-    external: true
-  richweb_net:
-    external: true
-  vaultwarden_net:
-    external: true
+{% endfor %}
+

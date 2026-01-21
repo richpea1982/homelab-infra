@@ -1,0 +1,18 @@
+docker_networks:
+  CF_net:
+    driver: bridge
+    attachable: true
+
+  internal_net:
+    driver: bridge
+    attachable: true
+
+  monitoring_net:
+    driver: bridge
+    attachable: true
+
+  management_net:
+    driver: bridge
+    attachable: true
+
+ 
