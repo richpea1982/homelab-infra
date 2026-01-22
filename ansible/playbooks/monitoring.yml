@@ -5,6 +5,9 @@
 
   vars_files:
     - ../group_vars/all/vault.yml
+    - ../group_vars/all/domains.yml
+    - ../group_vars/all/services.yml
 
   roles:
     - monitoring
+    - cloudflared

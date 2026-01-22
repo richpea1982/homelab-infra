@@ -8,5 +8,6 @@ grafana_port: 3000
 # Loki retention period (7 days by default)
 loki_retention: "168h"
 
-# Traefik metrics endpoint host (can be overridden)
-traefik_host: "{{ ansible_default_ipv4.address }}"
+# Traefik metrics endpoint (Docker DNS name)
+traefik_host: "traefik"
+

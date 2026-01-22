@@ -1,0 +1,9 @@
+http:
+  routers:
+    traefik-dashboard:
+      rule: "Host(`traefik.pearsalls.online`)"
+      entryPoints:
+        - websecure
+      service: api@internal
+      tls: {}
+

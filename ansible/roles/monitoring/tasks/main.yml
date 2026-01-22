@@ -1,20 +1,47 @@
 ---
 # roles/monitoring/tasks/main.yml
 
-- name: Ensure monitoring network exists
+# -----------------------------
+# COLLECT NETWORKS & VOLUMES
+# -----------------------------
+
+- name: Collect monitoring networks from services
+  ansible.builtin.set_fact:
+    monitoring_networks: >-
+      {{ services
+         | dict2items
+         | selectattr('key', 'in', ['prometheus', 'loki', 'grafana', 'promtail', 'cadvisor'])
+         | map(attribute='value.networks')
+         | list
+         | flatten
+         | unique }}
+
+- name: Ensure monitoring networks exist
   community.docker.docker_network:
-    name: monitoring_net
+    name: "{{ item }}"
     state: present
+  loop: "{{ monitoring_networks }}"
+
+- name: Collect monitoring volumes from services
+  ansible.builtin.set_fact:
+    monitoring_volumes: >-
+      {{ services
+         | dict2items
+         | selectattr('key', 'in', ['prometheus', 'loki', 'grafana'])
+         | map(attribute='value.volumes')
+         | list
+         | flatten
+         | unique }}
 
 - name: Ensure monitoring volumes exist
   community.docker.docker_volume:
     name: "{{ item }}"
     state: present
-  loop:
-    - prometheus_data
-    - loki_data
-    - loki_wal
-    - grafana_data
+  loop: "{{ monitoring_volumes }}"
+
+# -----------------------------
+# DIRECTORY STRUCTURE
+# -----------------------------
 
 - name: Create monitoring directory structure
   ansible.builtin.file:
@@ -29,7 +56,7 @@
     - grafana/provisioning/dashboards
 
 # -----------------------------
-# CONFIG DEPLOYMENT (with notify)
+# CONFIG DEPLOYMENT
 # -----------------------------
 
 - name: Deploy Prometheus configuration
@@ -37,35 +64,39 @@
     src: prometheus.yml.j2
     dest: /opt/monitoring/prometheus/prometheus.yml
     mode: '0644'
-  notify: restart monitoring
+  notify: restart prometheus
 
 - name: Deploy Loki configuration
   ansible.builtin.template:
     src: loki-config.yml.j2
     dest: /opt/monitoring/loki/loki-config.yml
     mode: '0644'
-  notify: restart monitoring
+  notify: restart loki
 
 - name: Deploy Promtail configuration
   ansible.builtin.template:
     src: promtail-config.yml.j2
     dest: /opt/monitoring/promtail/promtail-config.yml
     mode: '0644'
-  notify: restart monitoring
+  notify: restart promtail
 
 - name: Deploy Grafana datasource provisioning
   ansible.builtin.template:
     src: grafana-datasources.yml.j2
     dest: /opt/monitoring/grafana/provisioning/datasources/datasources.yml
     mode: '0644'
-  notify: restart monitoring
+  notify: restart grafana
 
 - name: Deploy monitoring stack docker-compose file
   ansible.builtin.template:
     src: docker-compose.yml.j2
     dest: /opt/monitoring/docker-compose.yml
     mode: '0644'
-  notify: restart monitoring
+  notify:
+    - restart prometheus
+    - restart loki
+    - restart promtail
+    - restart grafana
 
 # -----------------------------
 # LOKI VOLUME INITIALIZATION
@@ -85,6 +116,7 @@
     state: started
     restart_policy: "no"
   register: loki_init_result
+  changed_when: false
 
 # -----------------------------
 # START STACK
@@ -94,3 +126,4 @@
   community.docker.docker_compose_v2:
     project_src: /opt/monitoring
     state: present
+

@@ -39,7 +39,32 @@
     name: "{{ item }}"
     state: present
   loop: "{{ services.cloudflared.volumes | unique }}"
-  
+
+- name: Create DNS records for Cloudflared-enabled services
+  community.general.cloudflare_dns:
+    zone: "{{ primary_domain }}"
+    record: "{{ domain.split('.')[0] }}"
+    type: CNAME
+    value: "{{ cloudflare_tunnel_hostname }}"
+    ttl: 1
+    proxied: true
+    api_token: "{{ CLOUDFLARE_API_DNS_TOKEN }}"
+  loop: >-
+    {{
+      services
+      | dict2items
+      | selectattr('value.cloudflared_enabled', 'defined')
+      | selectattr('value.cloudflared_enabled', 'equalto', true)
+      | map(attribute='value.domains')
+      | list
+      | flatten
+    }}
+  loop_control:
+    loop_var: domain
+  register: dns_results
+  changed_when: dns_results.changed
+  notify: restart cloudflared
+ 
 - name: Start Cloudflared
   community.docker.docker_compose_v2:
     project_src: /opt/cloudflared
