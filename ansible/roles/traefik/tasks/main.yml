@@ -1,6 +1,6 @@
 ---
 # ----------------------------------------
-# DIRECTORIES
+# TRAEFIK DIRECTORIES
 # ----------------------------------------
 - name: Create Traefik base directory
   ansible.builtin.file:
@@ -17,6 +17,20 @@
     - dynamic
     - certs
     - logs
+# ----------------------------------------
+# CROWDSEC BOUNCER DIRECTORIES
+# ----------------------------------------
+- name: Create Cloudflare bouncer directory
+  ansible.builtin.file:
+    path: /opt/crowdsec/cf-bouncer
+    state: directory
+    mode: '0755'
+
+- name: Deploy Cloudflare bouncer config
+  ansible.builtin.template:
+    src: cf-bouncer.yaml.j2
+    dest: /opt/crowdsec/cf-bouncer/cf-bouncer.yaml
+    mode: '0600'
 
 # ----------------------------------------
 # STATIC CONFIG
@@ -96,7 +110,7 @@
     state: present
   loop: >
     {{
-      (services.traefik.networks + services.crowdsec.networks)
+      (services.traefik.networks + services.crowdsec.networks + services.cf_bouncer.networks)
       | unique
     }}
 
@@ -109,7 +123,7 @@
     state: present
   loop: >
     {{
-      (services.traefik.volumes + services.crowdsec.volumes)
+      (services.traefik.volumes + services.crowdsec.volumes + services.cf_bouncer.volumes)
       | unique
     }}
 # ----------------------------------------

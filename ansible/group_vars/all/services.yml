@@ -36,6 +36,14 @@ services:
     domains: []
     traefik_enabled: false
 
+  cf_bouncer:
+    networks:
+      - management_net
+    volumes:
+      - cf_bouncer_config
+    domains: []
+    traefik_enabled: false
+
   grafana:
     networks:
       - monitoring_net

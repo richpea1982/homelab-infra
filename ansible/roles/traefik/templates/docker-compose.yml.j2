@@ -64,7 +64,23 @@ services:
       - COLLECTIONS=crowdsecurity/traefik
       - TZ=Europe/Paris
 
-{% set all_networks = (services.traefik.networks + services.crowdsec.networks) | unique %}
+  cf-bouncer:
+    image: crowdsecurity/cloudflare-bouncer:latest
+    container_name: cf-bouncer
+    restart: always
+
+    networks:
+{% for net in services.cf_bouncer.networks %}
+      - {{ net }}
+{% endfor %}
+
+    volumes:
+      - /opt/crowdsec/cf-bouncer/crowdsec-cloudflare-bouncer.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml:ro
+{% for vol in services.cf_bouncer.volumes %}
+      - {{ vol }}:/data
+{% endfor %}
+
+{% set all_networks = (services.traefik.networks + services.crowdsec.networks + services.cf_bouncer.networks) | unique %}
 
 networks:
 {% for net in all_networks %}
@@ -72,7 +88,7 @@ networks:
     external: true
 {% endfor %}
 
-{% set all_volumes = (services.traefik.volumes + services.crowdsec.volumes) | unique %}
+{% set all_volumes = (services.traefik.volumes + services.crowdsec.volumes + services.cf_bouncer.volumes) | unique %}
 
 volumes:
 {% for vol in all_volumes %}
