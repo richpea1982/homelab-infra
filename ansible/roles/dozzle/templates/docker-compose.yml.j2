@@ -1,0 +1,31 @@
+services:  
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    restart: always
+    networks:
+{% for net in services.dozzle.networks %}
+      - {{ net }}
+{% endfor %}
+
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    labels:
+{% for domain in services.dozzle.domains %}
+      - "traefik.enable=true"
+      - "traefik.http.routers.dozzle.rule=Host(`{{ domain }}`)"
+      - "traefik.http.routers.dozzle.entrypoints=websecure"
+      - "traefik.http.routers.dozzle.tls=true"
+      - "traefik.http.services.dozzle.loadbalancer.server.port=8080"
+      - "traefik.docker.network={{ services.traefik.networks[1] }}"
+      - "traefik.http.middlewares.dozzle-auth.basicauth.users={{ traefik_basic_auth_users }}"
+      - "traefik.http.routers.dozzle.middlewares=dozzle-auth"
+{% endfor %}
+
+networks:
+{% for net in services.dozzle.networks %}
+  {{ net }}:
+    external: true
+{% endfor %}
+

@@ -1,5 +1,5 @@
 ---
-- name: Deploy monitoring stack
+- name: Deploy observability stack
   hosts: monitoring
   become: true
 
@@ -9,5 +9,5 @@
     - ../group_vars/all/services.yml
 
   roles:
-    - monitoring
+    - dozzle
     - cloudflared

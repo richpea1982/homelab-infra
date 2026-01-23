@@ -1,0 +1,40 @@
+---
+# ----------------------------------------
+# DOZZLE DIRECTORIES
+# ----------------------------------------
+- name: Create Dozzle base directory
+  ansible.builtin.file:
+    path: /opt/dozzle
+    state: directory
+    mode: '0755'
+
+# ----------------------------------------
+# DOCKER COMPOSE
+# ----------------------------------------
+- name: Deploy Dozzle docker-compose.yml
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: /opt/dozzle/docker-compose.yml
+    mode: '0644'
+  notify: restart dozzle
+
+# ----------------------------------------
+# CREATE NETWORKS
+# ----------------------------------------
+- name: Create networks required by Dozzle
+  community.docker.docker_network:
+    name: "{{ item }}"
+    state: present
+  loop: >
+    {{
+      (services.dozzle.networks) | unique
+    }}
+
+# ----------------------------------------
+# START STACK
+# ----------------------------------------
+- name: Start Dozzle stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/dozzle
+    state: present
+

@@ -53,3 +53,52 @@
     name: docker
     state: started
     enabled: true
+
+# ----------------------------------------
+# INSTALL LAZYDOCKER
+# ----------------------------------------
+
+- name: Check if LazyDocker is already installed
+  ansible.builtin.stat:
+    path: /usr/local/bin/lazydocker
+  register: lazydocker_binary
+
+- name: Set LazyDocker version
+  ansible.builtin.set_fact:
+    lazydocker_version: "0.24.4"
+
+- name: Download LazyDocker release
+  ansible.builtin.get_url:
+    url: "https://github.com/jesseduffield/lazydocker/releases/download/v{{ lazydocker_version }}/lazydocker_{{ lazydocker_version }}_Linux_x86.tar.gz"
+    dest: /tmp/lazydocker.tar.gz
+    mode: '0644'
+  when: not lazydocker_binary.stat.exists
+
+- name: Create LazyDocker temp directory
+  ansible.builtin.file:
+    path: /tmp/lazydocker
+    state: directory
+    mode: '0755'
+  when: not lazydocker_binary.stat.exists
+
+- name: Extract LazyDocker binary
+  ansible.builtin.unarchive:
+    src: /tmp/lazydocker.tar.gz
+    dest: /tmp/lazydocker
+    remote_src: true
+  when: not lazydocker_binary.stat.exists
+
+- name: Install LazyDocker binary
+  ansible.builtin.copy:
+    src: /tmp/lazydocker/lazydocker
+    dest: /usr/local/bin/lazydocker
+    mode: '0755'
+    remote_src: true
+  when: not lazydocker_binary.stat.exists
+
+- name: Clean up LazyDocker temp files
+  ansible.builtin.file:
+    path: /tmp/lazydocker
+    state: absent
+  when: not lazydocker_binary.stat.exists
+

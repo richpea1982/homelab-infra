@@ -1,6 +1,7 @@
 services:
 
   # ---- EDGE NETWORK ----
+
   root:
     image: ""
     domains:
@@ -12,7 +13,7 @@ services:
     traefik_enabled: false
 
   traefik:
-    image: "traefik:v3.1.4"
+    image: "traefik:v3.6"
     networks:
       - CF_net
       - internal_net
@@ -25,7 +26,7 @@ services:
     cloudflared_origin_verify: true
 
   cloudflared:
-    image: "cloudflare/cloudflared:2025.1.0"
+    image: "cloudflare/cloudflared:2026.1"
     networks:
       - CF_net
     volumes:
@@ -33,9 +34,10 @@ services:
     domains: []
     traefik_enabled: false
 
-  # ---- SECURITY ----  
+  # ---- SECURITY ----
+
   crowdsec:
-    image: "crowdsecurity/crowdsec:1.6.4"
+    image: "crowdsecurity/crowdsec:v1.7"
     networks:
       - management_net
     volumes:
@@ -44,7 +46,7 @@ services:
     traefik_enabled: false
 
   cf_bouncer:
-    image: "crowdsecurity/cloudflare-bouncer:0.0.29"
+    image: "crowdsecurity/cloudflare-bouncer:v0.3"
     networks:
       - management_net
     volumes:
@@ -52,9 +54,10 @@ services:
     domains: []
     traefik_enabled: false
 
-  # ---- MONITORING ----    
+  # ---- MONITORING ----
+
   grafana:
-    image: "grafana/grafana:11.1.0"
+    image: "grafana/grafana:12.3"
     networks:
       - monitoring_net
       - internal_net
@@ -67,7 +70,7 @@ services:
     cloudflared_origin_verify: true
 
   prometheus:
-    image: "prom/prometheus:v2.53.0"
+    image: "prom/prometheus:v3.9.1"
     networks:
       - monitoring_net
       - internal_net
@@ -80,7 +83,7 @@ services:
     cloudflared_origin_verify: true
 
   loki:
-    image: "grafana/loki:2.9.3"
+    image: "grafana/loki:3.6.4"
     networks:
       - monitoring_net
       - internal_net
@@ -94,7 +97,7 @@ services:
     cloudflared_origin_verify: true
 
   promtail:
-    image: "grafana/promtail:2.9.3"
+    image: "grafana/promtail:3.6.4"
     networks:
       - monitoring_net
     volumes: []
@@ -118,8 +121,9 @@ services:
     traefik_enabled: false
 
   # ---- OBSERVABILITY & MANAGEMENT ----
+
   dozzle:
-    image: "amir20/dozzle:v9.0.2"
+    image: "amir20/dozzle:v9.0"
     networks:
       - management_net
       - internal_net
@@ -129,4 +133,3 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
-
