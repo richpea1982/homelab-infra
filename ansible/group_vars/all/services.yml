@@ -1,5 +1,8 @@
 services:
+
+  # ---- EDGE NETWORK ----
   root:
+    image: ""
     domains:
       - "{{ primary_domain }}"
     cloudflared_enabled: true
@@ -9,6 +12,7 @@ services:
     traefik_enabled: false
 
   traefik:
+    image: "traefik:v3.1.4"
     networks:
       - CF_net
       - internal_net
@@ -21,6 +25,7 @@ services:
     cloudflared_origin_verify: true
 
   cloudflared:
+    image: "cloudflare/cloudflared:2025.1.0"
     networks:
       - CF_net
     volumes:
@@ -28,7 +33,9 @@ services:
     domains: []
     traefik_enabled: false
 
+  # ---- SECURITY ----  
   crowdsec:
+    image: "crowdsecurity/crowdsec:1.6.4"
     networks:
       - management_net
     volumes:
@@ -37,6 +44,7 @@ services:
     traefik_enabled: false
 
   cf_bouncer:
+    image: "crowdsecurity/cloudflare-bouncer:0.0.29"
     networks:
       - management_net
     volumes:
@@ -44,7 +52,9 @@ services:
     domains: []
     traefik_enabled: false
 
+  # ---- MONITORING ----    
   grafana:
+    image: "grafana/grafana:11.1.0"
     networks:
       - monitoring_net
       - internal_net
@@ -56,8 +66,8 @@ services:
     cloudflared_enabled: true
     cloudflared_origin_verify: true
 
-
   prometheus:
+    image: "prom/prometheus:v2.53.0"
     networks:
       - monitoring_net
       - internal_net
@@ -70,6 +80,7 @@ services:
     cloudflared_origin_verify: true
 
   loki:
+    image: "grafana/loki:2.9.3"
     networks:
       - monitoring_net
       - internal_net
@@ -83,6 +94,7 @@ services:
     cloudflared_origin_verify: true
 
   promtail:
+    image: "grafana/promtail:2.9.3"
     networks:
       - monitoring_net
     volumes: []
@@ -90,6 +102,7 @@ services:
     traefik_enabled: false
 
   cadvisor:
+    image: "gcr.io/cadvisor/cadvisor:latest"
     networks:
       - monitoring_net
     volumes: []
@@ -97,10 +110,23 @@ services:
     traefik_enabled: false
 
   node_exporter:
+    image: "prom/node-exporter:latest"
     networks:
       - monitoring_net
     volumes: []
     domains: []
     traefik_enabled: false
 
+  # ---- OBSERVABILITY & MANAGEMENT ----
+  dozzle:
+    image: "amir20/dozzle:v9.0.2"
+    networks:
+      - management_net
+      - internal_net
+    volumes: []
+    domains:
+      - "{{ dozzle_domain }}"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
 
