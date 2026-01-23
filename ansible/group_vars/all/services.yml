@@ -26,7 +26,7 @@ services:
     cloudflared_origin_verify: true
 
   cloudflared:
-    image: "cloudflare/cloudflared:2026.1"
+    image: "cloudflare/cloudflared:2026.1.1"
     networks:
       - CF_net
     volumes:

@@ -1,6 +1,6 @@
 services:
   cloudflared:
-    image: cloudflare/cloudflared:latest
+    image: "{{ services.cloudflared.image }}"
     container_name: cloudflared
     restart: always
     command: tunnel run
