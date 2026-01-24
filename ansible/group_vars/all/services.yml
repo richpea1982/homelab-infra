@@ -37,20 +37,17 @@ services:
   # ---- SECURITY ----
 
   crowdsec:
-    image: "crowdsecurity/crowdsec:v1.7"
-    networks:
-      - management_net
+    image: "crowdsecurity/crowdsec:v1.7.6"
+    networks: []
     volumes:
       - crowdsec_data
     domains: []
     traefik_enabled: false
 
   cf_bouncer:
-    image: "crowdsecurity/cloudflare-bouncer:v0.3"
+    image: "crowdsecurity/cloudflare-bouncer:v0.3.0"
     networks:
-      - management_net
-    volumes:
-      - cf_bouncer_config
+    volumes: []
     domains: []
     traefik_enabled: false
 

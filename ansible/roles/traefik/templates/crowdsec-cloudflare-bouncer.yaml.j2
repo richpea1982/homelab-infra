@@ -1,0 +1,29 @@
+# CrowdSec Config
+crowdsec_lapi_url: http://crowdsec:8080/
+crowdsec_lapi_key: "{{ crowdsec_cloudflare_bouncer_lapi_key }}"
+crowdsec_update_frequency: 10s
+
+#Cloudflare Config. 
+cloudflare_config:
+  accounts:
+  - id: "{{ cloudflare_account_id }}"
+    token: "{{ cloudflare_api_token }}"
+    ip_list_prefix: crowdsec
+    default_action: challenge
+    zones: 
+    - actions: 
+      - challenge # valid choices are either of challenge, js_challenge, block
+      zone_id: "{{ cloudflare_zone_id }}"
+    
+  update_frequency: 30s # the frequency to update the cloudflare IP list 
+
+# Bouncer Config
+daemon: false
+log_mode: file
+log_dir: /var/log/ 
+log_level: info # valid choices are either debug, info, error 
+
+prometheus:
+  enabled: true
+  listen_addr: 127.0.0.1
+  listen_port: 2112

@@ -1,6 +1,6 @@
 services:
   traefik:
-    image: traefik:v3.6
+    image: "{{ services.traefik.image }}"
     container_name: traefik
     restart: always
     user: "0:{{ docker_group_gid }}"
@@ -45,14 +45,15 @@ services:
       - "--configFile=/traefik.yml"
 
   crowdsec:
-    image: crowdsecurity/crowdsec:latest
+    image: "{{ services.crowdsec.image }}"
     container_name: crowdsec
     restart: always
 
     networks:
-{% for net in services.crowdsec.networks %}
-      - {{ net }}
-{% endfor %}
+      - crowd_net
+
+    ports:
+      - "8080"
 
     volumes:
 {% for vol in services.crowdsec.volumes %}
@@ -63,32 +64,39 @@ services:
     environment:
       - COLLECTIONS=crowdsecurity/traefik
       - TZ=Europe/Paris
+      - LAPI_LISTEN=0.0.0.0:8080
 
   cf-bouncer:
-    image: crowdsecurity/cloudflare-bouncer:latest
+    image: "{{ services.cf_bouncer.image }}"
     container_name: cf-bouncer
     restart: always
 
+    depends_on:
+      - crowdsec
+
+    entrypoint: >
+      /bin/sh -c "sleep 20 && exec /usr/local/bin/crowdsec-cloudflare-bouncer -c /etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml"
+
     networks:
-{% for net in services.cf_bouncer.networks %}
-      - {{ net }}
-{% endfor %}
+      - crowd_net
 
     volumes:
       - /opt/crowdsec/cf-bouncer/crowdsec-cloudflare-bouncer.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml:ro
-{% for vol in services.cf_bouncer.volumes %}
-      - {{ vol }}:/data
-{% endfor %}
 
-{% set all_networks = (services.traefik.networks + services.crowdsec.networks + services.cf_bouncer.networks) | unique %}
+{% set all_networks = (services.traefik.networks) | unique %}
 
 networks:
+  crowd_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
 {% for net in all_networks %}
   {{ net }}:
     external: true
 {% endfor %}
 
-{% set all_volumes = (services.traefik.volumes + services.crowdsec.volumes + services.cf_bouncer.volumes) | unique %}
+{% set all_volumes = (services.traefik.volumes + services.crowdsec.volumes) | unique %}
 
 volumes:
 {% for vol in all_volumes %}

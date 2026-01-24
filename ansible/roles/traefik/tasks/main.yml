@@ -28,9 +28,9 @@
 
 - name: Deploy Cloudflare bouncer config
   ansible.builtin.template:
-    src: cf-bouncer.yaml.j2
-    dest: /opt/crowdsec/cf-bouncer/cf-bouncer.yaml
-    mode: '0600'
+    src: crowdsec-cloudflare-bouncer.yaml.j2
+    dest: /opt/crowdsec/cf-bouncer/crowdsec-cloudflare-bouncer.yaml
+    mode: '0755'
 
 # ----------------------------------------
 # STATIC CONFIG
@@ -110,7 +110,7 @@
     state: present
   loop: >
     {{
-      (services.traefik.networks + services.crowdsec.networks + services.cf_bouncer.networks)
+      (services.traefik.networks)
       | unique
     }}
 
@@ -123,14 +123,14 @@
     state: present
   loop: >
     {{
-      (services.traefik.volumes + services.crowdsec.volumes + services.cf_bouncer.volumes)
+      (services.traefik.volumes + services.crowdsec.volumes)
       | unique
     }}
+
 # ----------------------------------------
 # START STACK
 # ----------------------------------------
-- name: Start Traefik stack
-  community.docker.docker_compose_v2:
-    project_src: /opt/traefik
-    state: present
-
+#- name: Start Traefik stack
+#  community.docker.docker_compose_v2:
+#    project_src: /opt/traefik
+#    state: present
