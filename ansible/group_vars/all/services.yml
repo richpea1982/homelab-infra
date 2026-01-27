@@ -23,6 +23,7 @@ services:
       - CF_net
       - internal_net
       - wp-sites
+      - apps_net
     volumes:
       - traefik_data
     domains:
@@ -253,4 +254,16 @@ services:
         - petitsanglais_net
       volumes:
         - petitsanglais_db
+
+# ------ APPS ---------
+  bentopdf:
+    image: "bentopdf/bentopdf:latest"
+    networks:
+      - apps_net
+    volumes: []
+    domains:
+      - "{{ bentopdf_domain }}"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
 

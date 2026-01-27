@@ -1,0 +1,28 @@
+services:
+
+  bentopdf:
+    image: "{{ services.bentopdf.image }}"
+    container_name: "bentopdf"
+    restart: unless-stopped
+
+    networks:
+{% for net in services.bentopdf.networks %}
+      - {{ net }}
+{% endfor %}
+
+    labels:
+      - "traefik.enable={{ services.bentopdf.traefik_enabled | default(false) | lower }}"
+{% if services.bentopdf.traefik_enabled %}
+      - "traefik.http.routers.bentopdf.rule={% for d in services.bentopdf.domains %}Host(`{{ d }}`){% if not loop.last %} || {% endif %}{% endfor %}"
+      - "traefik.http.routers.bentopdf.entrypoints=websecure"
+      - "traefik.http.routers.bentopdf.tls=true"
+      - "traefik.http.routers.bentopdf.tls.certresolver=cloudflare"
+      - "traefik.http.services.bentopdf.loadbalancer.server.port=8080"
+      - "traefik.docker.network=apps_net"
+{% endif %}
+
+networks:
+{% for net in services.bentopdf.networks %}
+  {{ net }}:
+    external: true
+{% endfor %}

@@ -1,0 +1,47 @@
+---
+# ============================================================
+# 1. Ensure directory structure exists
+# ============================================================
+
+- name: Ensure bentopdf base directory exists
+  file:
+    path: "/srv/bentopdf"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+# ============================================================
+# 2. Template docker-compose.yml
+# ============================================================
+
+- name: Template docker-compose.yml for bentopdf
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "/srv/bentopdf/docker-compose.yml"
+    mode: "0644"
+
+# ============================================================
+# 3. Ensure required networks exist
+# ============================================================
+
+- name: Ensure networks required by bentopdf exist
+  docker_network:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ services.bentopdf.networks }}"
+  when: services.bentopdf.networks is defined
+
+# ============================================================
+# 4. Deploy bentopdf docker compose stack
+# ============================================================
+
+- name: Pull images for bentopdf
+  community.docker.docker_image:
+    name: "{{ services.bentopdf.image }}"
+    source: pull
+
+- name: Deploy bentopdf docker compose stack
+  community.docker.docker_compose_v2:
+    project_src: "/srv/bentopdf"
+    state: present

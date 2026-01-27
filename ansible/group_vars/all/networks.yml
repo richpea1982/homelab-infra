@@ -39,4 +39,8 @@ docker_networks:
     driver: bridge
     attachable: true
 
- 
+  apps_net:
+    driver: bridge
+    attachable: true
+
+

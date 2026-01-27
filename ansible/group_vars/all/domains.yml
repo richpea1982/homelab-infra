@@ -16,3 +16,5 @@ dozzle_domain: "dozzle.{{ primary_domain }}"
 petitsanglais_domain: "petitsanglaisabeziers.fr"
 esperancefr_domain: "egliseesperanceagde.fr"
 esperanceorg_domain: "egliseesperanceagde.org"
+bentopdf_domain: "bentopdf.{{ primary_domain }}"
+
