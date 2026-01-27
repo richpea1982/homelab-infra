@@ -1,3 +1,8 @@
+wp_images:
+  nginx: "nginx:1.26-alpine"
+  wp_php: "wordpress:php8.4-fpm"
+  mariadb: "mariadb:11.8"
+
 services:
 
   # ---- EDGE NETWORK ----
@@ -5,7 +10,7 @@ services:
   root:
     image: ""
     domains:
-      - "{{ primary_domain }}"
+      - "{{ root_domain }}"
     cloudflared_enabled: true
     cloudflared_origin_verify: true
     networks: []
@@ -17,6 +22,7 @@ services:
     networks:
       - CF_net
       - internal_net
+      - wp-sites
     volumes:
       - traefik_data
     domains:
@@ -46,7 +52,7 @@ services:
 
   cf_bouncer:
     image: "crowdsecurity/cloudflare-bouncer:v0.3.0"
-    networks:
+    networks: []
     volumes: []
     domains: []
     traefik_enabled: false
@@ -117,7 +123,7 @@ services:
     domains: []
     traefik_enabled: false
 
-  # ---- OBSERVABILITY & MANAGEMENT ----
+  # ---- OBSERVABILITY ----
 
   dozzle:
     image: "amir20/dozzle:v9.0"
@@ -130,3 +136,121 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+
+  # ---- WORDPRESS SITES ----
+
+  esperance:
+    nginx:
+      image: "{{ wp_images.nginx }}"
+      networks:
+        - internal_net
+        - esperance_net
+      volumes:
+        - esperance_wp
+        - esperance_nginx_conf
+      domains:
+        - "{{ esperanceorg_domain }}"
+        - "{{ esperancefr_domain }}"
+      traefik_enabled: true
+
+    wp_php:
+      image: "{{ wp_images.wp_php }}"
+      networks:
+        - esperance_net
+      volumes:
+        - esperance_wp
+
+    mariadb:
+      image: "{{ wp_images.mariadb }}"
+      networks:
+        - esperance_net
+      volumes:
+        - esperance_db
+
+
+  richweb:
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    
+    nginx:
+      image: "{{ wp_images.nginx }}"
+      networks:
+        - wp-sites
+        - richweb_net
+      volumes:
+        - richweb_wp
+        - richweb_nginx_conf
+      domains:
+        - "{{ richweb_domain }}"
+      traefik_enabled: true
+
+    wp_php:
+      image: "{{ wp_images.wp_php }}"
+      networks:
+        - richweb_net
+      volumes:
+        - richweb_wp
+
+    mariadb:
+      image: "{{ wp_images.mariadb }}"
+      networks:
+        - richweb_net
+      volumes:
+        - richweb_db
+
+
+  hantaweb:
+    nginx:
+      image: "{{ wp_images.nginx }}"
+      networks:
+        - internal_net
+        - hantaweb_net
+      volumes:
+        - hantaweb_wp
+        - hantaweb_nginx_conf
+      domains:
+        - "hantaweb.example.com"
+      traefik_enabled: true
+
+    wp_php:
+      image: "{{ wp_images.wp_php }}"
+      networks:
+        - hantaweb_net
+      volumes:
+        - hantaweb_wp
+
+    mariadb:
+      image: "{{ wp_images.mariadb }}"
+      networks:
+        - hantaweb_net
+      volumes:
+        - hantaweb_db
+
+
+  petitsanglais:
+    nginx:
+      image: "{{ wp_images.nginx }}"
+      networks:
+        - internal_net
+        - petitsanglais_net
+      volumes:
+        - petitsanglais_wp
+        - petitsanglais_nginx_conf
+      domains:
+        - "{{ petitsanglais_domain }}"
+      traefik_enabled: true
+
+    wp_php:
+      image: "{{ wp_images.wp_php }}"
+      networks:
+        - petitsanglais_net
+      volumes:
+        - petitsanglais_wp
+
+    mariadb:
+      image: "{{ wp_images.mariadb }}"
+      networks:
+        - petitsanglais_net
+      volumes:
+        - petitsanglais_db
+

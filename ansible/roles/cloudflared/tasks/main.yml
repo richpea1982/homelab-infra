@@ -1,72 +1,15 @@
 ---
-- name: Create Cloudflared directory
-  file:
-    path: /opt/cloudflared
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
+- name: Provision Cloudflared base system
+  include_tasks: provision.yml
 
-- name: Write Cloudflare tunnel credentials file
-  copy:
-    content: "{{ cloudflare_tunnel_credentials }}"
-    dest: "/opt/cloudflared/{{ cloudflare_tunnel_id }}.json"
-    mode: '0644'
-  notify: restart cloudflared
+- name: Ensure Cloudflared networks exist
+  include_tasks: networks.yml
 
-- name: Deploy Cloudflared config
-  template:
-    src: config.yml.j2
-    dest: /opt/cloudflared/config.yml
-    mode: '0644'
-  notify: restart cloudflared
+- name: Ensure Cloudflared volumes exist
+  include_tasks: volumes.yml
 
-- name: Deploy Cloudflared docker-compose
-  template:
-    src: docker-compose.yml.j2
-    dest: /opt/cloudflared/docker-compose.yml
-    mode: '0644'
-  notify: restart cloudflared
+- name: Update DNS + ingress rules
+  include_tasks: dns-ingress.yml
 
-- name: Create networks required by Cloudflared
-  community.docker.docker_network:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ services.cloudflared.networks | unique }}"
-
-- name: Create volumes required by Cloudflared
-  community.docker.docker_volume:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ services.cloudflared.volumes | unique }}"
-
-- name: Create DNS records for Cloudflared-enabled services
-  community.general.cloudflare_dns:
-    zone: "{{ primary_domain }}"
-    record: "{{ domain.split('.')[0] }}"
-    type: CNAME
-    value: "{{ cloudflare_tunnel_hostname }}"
-    ttl: 1
-    proxied: true
-    api_token: "{{ CLOUDFLARE_API_DNS_TOKEN }}"
-  loop: >-
-    {{
-      services
-      | dict2items
-      | selectattr('value.cloudflared_enabled', 'defined')
-      | selectattr('value.cloudflared_enabled', 'equalto', true)
-      | map(attribute='value.domains')
-      | list
-      | flatten
-    }}
-  loop_control:
-    loop_var: domain
-  register: dns_results
-  changed_when: dns_results.changed
-  notify: restart cloudflared
- 
-- name: Start Cloudflared
-  community.docker.docker_compose_v2:
-    project_src: /opt/cloudflared
-    state: present
-
+- name: Ensure Cloudflared is running
+  include_tasks: run.yml

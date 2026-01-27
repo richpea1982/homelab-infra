@@ -1,0 +1,49 @@
+---
+# ---------------------------------------------------------
+# 1. Create DNS records for Cloudflared-enabled services
+# ---------------------------------------------------------
+- name: Create DNS records for Cloudflared-enabled services
+  community.general.cloudflare_dns:
+    zone: "{{ primary_domain }}"
+    record: "{{ domain.split('.')[0] }}"
+    type: CNAME
+    value: "{{ cloudflare_tunnel_hostname }}"
+    ttl: 1
+    proxied: true
+    api_token: "{{ CLOUDFLARE_API_DNS_TOKEN }}"
+  loop: >-
+    {{
+      (
+        services
+        | dict2items
+        | selectattr('value.cloudflared_enabled', 'defined')
+        | selectattr('value.cloudflared_enabled', 'equalto', true)
+        | map(attribute='value.domains', default=[])
+        | list
+        | flatten
+      )
+      +
+      (
+        services
+        | dict2items
+        | selectattr('value.cloudflared_enabled', 'defined')
+        | selectattr('value.cloudflared_enabled', 'equalto', true)
+        | map(attribute='value.nginx.domains', default=[])
+        | list
+        | flatten
+      )
+    }}
+  loop_control:
+    loop_var: domain
+  notify: restart cloudflared
+
+
+# ---------------------------------------------------------
+# 2. Deploy Cloudflared ingress configuration
+# ---------------------------------------------------------
+- name: Deploy Cloudflared ingress config
+  template:
+    src: config.yml.j2
+    dest: /opt/cloudflared/config.yml
+    mode: '0644'
+  notify: restart cloudflared

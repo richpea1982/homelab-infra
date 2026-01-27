@@ -1,0 +1,70 @@
+services:
+
+  nginx:
+    image: "{{ services[site_name].nginx.image }}"
+    container_name: "{{ site_name }}_nginx"
+    restart: unless-stopped
+    depends_on:
+      - wp_php
+    networks:
+{% for net in services[site_name].nginx.networks %}
+      - {{ net }}
+{% endfor %}
+    volumes:
+      - "/srv/wp/{{ site_name }}/wp:/var/www/html"
+      - "/srv/wp/{{ site_name }}/wp-content:/var/www/html/wp-content"
+      - "/srv/wp/{{ site_name }}/nginx.conf:/etc/nginx/conf.d/default.conf"
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{ site_name }}.rule={% for d in services[site_name].nginx.domains %}Host(`{{ d }}`){% if not loop.last %} || {% endif %}{% endfor %}"
+      - "traefik.http.routers.{{ site_name }}.entrypoints=websecure"
+      - "traefik.http.routers.{{ site_name }}.tls=true"
+      - "traefik.http.routers.{{ site_name }}.tls.certresolver=cloudflare"
+      - "traefik.http.services.{{ site_name }}.loadbalancer.server.port=80"
+      - "traefik.docker.network=wp-sites"
+      - "traefik.http.routers.{{ site_name }}.service={{ site_name }}"
+
+  wp_php:
+    image: "{{ services[site_name].wp_php.image }}"
+    container_name: "{{ site_name }}_php"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+    networks:
+{% for net in services[site_name].wp_php.networks %}
+      - {{ net }}
+{% endfor %}
+    volumes:
+      - "/srv/wp/{{ site_name }}/wp:/var/www/html"
+      - "/srv/wp/{{ site_name }}/wp-content:/var/www/html/wp-content"
+      - "/srv/wp/{{ site_name }}/php.ini:/usr/local/etc/php/conf.d/custom.ini"
+
+  mariadb:
+    image: "{{ services[site_name].mariadb.image }}"
+    container_name: "{{ site_name }}_db"
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    networks:
+{% for net in services[site_name].mariadb.networks %}
+      - {{ net }}
+{% endfor %}
+    volumes:
+      - "/srv/wp/{{ site_name }}/db:/var/lib/mysql"
+
+networks:
+{% for net in services[site_name].nginx.networks %}
+  {{ net }}:
+    external: true
+{% endfor %}

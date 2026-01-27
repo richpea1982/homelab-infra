@@ -1,0 +1,14 @@
+---
+- name: Pull images for site
+  community.docker.docker_image:
+    name: "{{ item }}"
+    source: pull
+  loop:
+    - "{{ services[site_name].nginx.image }}"
+    - "{{ services[site_name].wp_php.image }}"
+    - "{{ services[site_name].mariadb.image }}"
+
+- name: Deploy docker compose stack
+  community.docker.docker_compose_v2:
+    project_src: "/srv/wp/{{ site_name }}"
+    state: present

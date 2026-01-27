@@ -8,4 +8,18 @@ docker_volumes:
   crowdsec_data: {}
   traefik_data: {}
   cloudflared_data: {}
-
+  petitsanglais_wp: {}
+  petitsanglais_db: {}
+  petitsanglais_nginx.conf: {}
+  hantaweb_wp: {}
+  hantaweb_db: {}
+  hantaweb_nginx.conf: {}
+  richweb_wp: {}
+  richweb_db: {}
+  richweb_nginx.conf: {}
+  esperancefr_wp: {}
+  esperancefr_db: {}
+  esperancefr_nginx.conf: {}
+  esperanceorg_wp: {}
+  esperanceorg_db: {}
+  esperanceorg_nginx.conf: {}

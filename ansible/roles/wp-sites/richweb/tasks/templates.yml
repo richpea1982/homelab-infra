@@ -1,0 +1,26 @@
+---
+- name: Template docker-compose.yml
+  template:
+    src: "docker-compose.yml.j2"
+    dest: "/srv/wp/{{ site_name }}/docker-compose.yml"
+    mode: "0644"
+
+- name: Template nginx.conf
+  template:
+    src: "nginx.conf.j2"
+    dest: "/srv/wp/{{ site_name }}/nginx.conf"
+    mode: "0644"
+
+- name: Template php.ini
+  template:
+    src: "php.ini.j2"
+    dest: "/srv/wp/{{ site_name }}/php.ini"
+    mode: "0644"
+
+- name: Template .env file
+  template:
+    src: "env.j2"
+    dest: "/srv/wp/{{ site_name }}/.env"
+    mode: "0600"
+    owner: root
+    group: root

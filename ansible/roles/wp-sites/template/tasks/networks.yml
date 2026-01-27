@@ -1,0 +1,12 @@
+- name: Create networks required by "{{ site_name }}"
+  community.docker.docker_network:
+    name: "{{ item }}"
+    state: present
+  loop: >-
+    {{
+      services[site_name].nginx.networks
+      + services[site_name].wp_php.networks
+      + services[site_name].mariadb.networks
+      | unique
+    }}
+
