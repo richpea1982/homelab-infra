@@ -1,6 +1,0 @@
----
-- name: Create networks required by Cloudflared
-  community.docker.docker_network:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ services.cloudflared.networks | unique }}"

@@ -1,21 +1,6 @@
 ---
 - name: Create global Docker volumes
   community.docker.docker_volume:
-    name: "{{ item }}"
+    name: "{{ item.key }}"
     state: present
-  loop:
-    # Security-sensitive apps
-    - vaultwarden_data
-
-    # Monitoring stack
-    - prometheus_data
-    - grafana_data
-
-    # CrowdSec
-    - crowdsec_data
-
-    # Website databases
-    - mariadb_richweb
-    - mariadb_hantaweb
-    - mariadb_petitsanglais
-    - mariadb_esperance
+  loop: "{{ docker_volumes | dict2items }}"

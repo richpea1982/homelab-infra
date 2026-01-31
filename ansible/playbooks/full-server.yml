@@ -1,5 +1,5 @@
 ---
-- name: Deploy full edge stack on srv2
+- name: Full server deployment
   hosts: srv2
   become: true
 
@@ -11,7 +11,13 @@
     - ../group_vars/all/domains.yml
 
   roles:
+    - docker
+    - docker-networks
+    - docker-volumes
     - traefik
     - cloudflared
     - crowdsec
-
+    - monitoring
+    - dozzle
+    - bentopdf
+    - wp-sites/richweb

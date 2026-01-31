@@ -19,28 +19,30 @@ docker_networks:
     driver: bridge
     attachable: true
 
-  esperancefr_net:
-    driver: bridge
-    attachable: true
-
-  esperanceorg_net:
-    driver: bridge
-    attachable: true
-
-  petitsanglais_net:
-    driver: bridge
-    attachable: true
+  # esperancefr_net:
+  #   driver: bridge
+  #   attachable: true
+  #
+  # esperanceorg_net:
+  #   driver: bridge
+  #   attachable: true
+  #
+  # petitsanglais_net:
+  #   driver: bridge
+  #   attachable: true
 
   richweb_net:
     driver: bridge
     attachable: true
 
-  hantaweb_net:
-    driver: bridge
-    attachable: true
+  # hantaweb_net:
+  #   driver: bridge
+  #   attachable: true
 
   apps_net:
     driver: bridge
     attachable: true
 
-
+  terra_net:
+    driver: bridge
+    attachable: true

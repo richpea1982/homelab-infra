@@ -1,6 +1,0 @@
----
-- name: Create volumes required by Cloudflared
-  community.docker.docker_volume:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ services.cloudflared.volumes | unique }}"

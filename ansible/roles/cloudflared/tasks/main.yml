@@ -2,12 +2,6 @@
 - name: Provision Cloudflared base system
   include_tasks: provision.yml
 
-- name: Ensure Cloudflared networks exist
-  include_tasks: networks.yml
-
-- name: Ensure Cloudflared volumes exist
-  include_tasks: volumes.yml
-
 - name: Update DNS + ingress rules
   include_tasks: dns-ingress.yml
 

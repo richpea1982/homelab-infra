@@ -102,35 +102,9 @@
   notify: restart traefik
 
 # ----------------------------------------
-# CREATE NETWORKS
-# ----------------------------------------
-- name: Create networks required by Traefik and CrowdSec
-  community.docker.docker_network:
-    name: "{{ item }}"
-    state: present
-  loop: >
-    {{
-      (services.traefik.networks)
-      | unique
-    }}
-
-# ----------------------------------------
-# CREATE VOLUMES
-# ----------------------------------------
-- name: Create volumes required by Traefik and CrowdSec
-  community.docker.docker_volume:
-    name: "{{ item }}"
-    state: present
-  loop: >
-    {{
-      (services.traefik.volumes + services.crowdsec.volumes)
-      | unique
-    }}
-
-# ----------------------------------------
 # START STACK
 # ----------------------------------------
-#- name: Start Traefik stack
-#  community.docker.docker_compose_v2:
-#    project_src: /opt/traefik
-#    state: present
+- name: Start Traefik stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/traefik
+    state: present

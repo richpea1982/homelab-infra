@@ -1,0 +1,28 @@
+---
+# Ensure base directory exists
+- name: Create Cloudflared base directory
+  file:
+    path: /opt/cloudflared
+    state: directory
+    mode: '0755'
+
+# Ensure cert directory exists
+- name: Create Cloudflared cert directory
+  file:
+    path: /opt/cloudflared/certs
+    state: directory
+    mode: '0755'
+
+# Deploy docker-compose.yml
+- name: Deploy Cloudflared docker-compose.yml
+  template:
+    src: docker-compose.yml.j2
+    dest: /opt/cloudflared/docker-compose.yml
+    mode: '0644'
+
+# Deploy config.yml
+- name: Deploy Cloudflared config.yml
+  template:
+    src: config.yml.j2
+    dest: /opt/cloudflared/config.yml
+    mode: '0644'

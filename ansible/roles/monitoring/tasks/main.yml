@@ -1,44 +1,4 @@
 ---
-# roles/monitoring/tasks/main.yml
-
-# -----------------------------
-# COLLECT NETWORKS & VOLUMES
-# -----------------------------
-
-- name: Collect monitoring networks from services
-  ansible.builtin.set_fact:
-    monitoring_networks: >-
-      {{ services
-         | dict2items
-         | selectattr('key', 'in', ['prometheus', 'loki', 'grafana', 'promtail', 'cadvisor'])
-         | map(attribute='value.networks')
-         | list
-         | flatten
-         | unique }}
-
-- name: Ensure monitoring networks exist
-  community.docker.docker_network:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ monitoring_networks }}"
-
-- name: Collect monitoring volumes from services
-  ansible.builtin.set_fact:
-    monitoring_volumes: >-
-      {{ services
-         | dict2items
-         | selectattr('key', 'in', ['prometheus', 'loki', 'grafana'])
-         | map(attribute='value.volumes')
-         | list
-         | flatten
-         | unique }}
-
-- name: Ensure monitoring volumes exist
-  community.docker.docker_volume:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ monitoring_volumes }}"
-
 # -----------------------------
 # DIRECTORY STRUCTURE
 # -----------------------------
@@ -126,4 +86,3 @@
   community.docker.docker_compose_v2:
     project_src: /opt/monitoring
     state: present
-

@@ -1,27 +1,33 @@
 ---
+# roles/terraform/tasks/main.yml
+
 # ----------------------------------------
-# DOZZLE DIRECTORIES
+# DIRECTORY STRUCTURE
 # ----------------------------------------
-- name: Create Dozzle base directory
+
+- name: Create Terraform base directory
   ansible.builtin.file:
-    path: /opt/dozzle
+    path: /srv/terraform
     state: directory
     mode: '0755'
 
 # ----------------------------------------
-# DOCKER COMPOSE
+# DEPLOY COMPOSE FILE
 # ----------------------------------------
-- name: Deploy Dozzle docker-compose.yml
+
+- name: Deploy Terraform docker-compose.yml
   ansible.builtin.template:
     src: docker-compose.yml.j2
-    dest: /opt/dozzle/docker-compose.yml
+    dest: /srv/terraform/docker-compose.yml
     mode: '0644'
-  notify: restart dozzle
 
 # ----------------------------------------
 # START STACK
 # ----------------------------------------
-- name: Start Dozzle stack
+
+- name: Start Terraform container
   community.docker.docker_compose_v2:
-    project_src: /opt/dozzle
+    project_src: /srv/terraform
     state: present
+    pull: always
+

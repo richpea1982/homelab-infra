@@ -5,8 +5,5 @@
 - name: Template configuration files
   include_tasks: templates.yml
 
-- name: Ensure networks exist
-  include_tasks: networks.yml
-
 - name: Deploy docker compose stack
   include_tasks: docker.yml

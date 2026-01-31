@@ -22,17 +22,6 @@
     mode: "0644"
 
 # ============================================================
-# 3. Ensure required networks exist
-# ============================================================
-
-- name: Ensure networks required by bentopdf exist
-  docker_network:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ services.bentopdf.networks }}"
-  when: services.bentopdf.networks is defined
-
-# ============================================================
 # 4. Deploy bentopdf docker compose stack
 # ============================================================
 

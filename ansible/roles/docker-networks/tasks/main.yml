@@ -1,17 +1,8 @@
 ---
 - name: Create global Docker networks
   community.docker.docker_network:
-    name: "{{ item }}"
+    name: "{{ item.key }}"
+    driver: "{{ item.value.driver }}"
+    attachable: "{{ item.value.attachable }}"
     state: present
-  loop:
-    - CF-net
-    - management_net
-    - vaultwarden_net
-    - richweb_net
-    - richweb_backend
-    - hantaweb_net
-    - hantaweb_backend
-    - petitsanglais_net
-    - petitsanglais_backend
-    - esperance_net
-    - esperance_backend
+  loop: "{{ docker_networks | dict2items }}"

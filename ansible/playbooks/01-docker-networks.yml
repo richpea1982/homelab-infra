@@ -5,6 +5,7 @@
 
   vars_files:
     - ../group_vars/all/vault.yml
+    - ../group_vars/all/networks.yml
 
   roles:
     - docker-networks

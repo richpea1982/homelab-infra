@@ -1,0 +1,45 @@
+ansible_become_password: 
+
+cloudflare_origin_cert: |
+
+
+cloudflare_origin_key: |
+
+
+# cloudflare credentials
+cloudflare_tunnel_id: 
+
+cloudflare_tunnel_credentials: |
+  {
+    "TunnelID": ,
+    "AccountTag":,
+    "TunnelSecret":
+  }
+
+
+CLOUDFLARE_API_DNS_TOKEN:
+ACCOUNT_EMAIL:
+cloudflare_api_token:
+cloudflare_zone_id:
+cloudflare_account_id:
+
+acme_email:
+
+crowdsec_lapi_key:
+crowdsec_cloudflare_bouncer_lapi_key:
+
+traefik_basic_auth_users:
+
+# ============================
+# WordPress Database Secrets
+# ============================
+
+# Global DB user for all sites
+vault_wp_db_user: 
+
+# Global DB password for all sites
+vault_wp_db_password: 
+
+# Global MariaDB root password
+vault_wp_db_root_password: 
+

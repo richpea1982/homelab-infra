@@ -22,7 +22,7 @@ services:
     networks:
       - CF_net
       - internal_net
-      - wp-sites
+      - wpsites_net
       - apps_net
     volumes:
       - traefik_data
@@ -144,7 +144,7 @@ services:
     nginx:
       image: "{{ wp_images.nginx }}"
       networks:
-        - internal_net
+        - wpsites_net
         - esperance_net
       volumes:
         - esperance_wp
@@ -176,7 +176,7 @@ services:
     nginx:
       image: "{{ wp_images.nginx }}"
       networks:
-        - wp-sites
+        - wpsites_net
         - richweb_net
       volumes:
         - richweb_wp
@@ -204,7 +204,7 @@ services:
     nginx:
       image: "{{ wp_images.nginx }}"
       networks:
-        - internal_net
+        - wpsites_net
         - hantaweb_net
       volumes:
         - hantaweb_wp
@@ -232,7 +232,7 @@ services:
     nginx:
       image: "{{ wp_images.nginx }}"
       networks:
-        - internal_net
+        - wpsites_net
         - petitsanglais_net
       volumes:
         - petitsanglais_wp
@@ -266,4 +266,17 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+
+# ------ INFRA / TOOLING ---------
+
+  terraform:
+    image: "hashicorp/terraform:1.14.3"
+    networks:
+      - terra_net
+    volumes:
+      - "terraform_data:/data"
+    domains: []
+    traefik_enabled: false
+    cloudflared_enabled: false
+    cloudflared_origin_verify: false
 
