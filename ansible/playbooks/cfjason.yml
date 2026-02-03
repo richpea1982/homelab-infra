@@ -1,5 +1,5 @@
 ---
-- name: Deploy Traefik on docker-srv
+- name: Deploy Cloudflare json
   hosts: docker-srv
   become: true
 
@@ -11,4 +11,4 @@
     - ../group_vars/all/domains.yml
 
   roles:
-    - traefik
+    - cfjson

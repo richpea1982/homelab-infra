@@ -1,4 +1,3 @@
----
 - name: Create base directory for site
   file:
     path: "/srv/wp/{{ site_name }}"
@@ -6,7 +5,14 @@
     owner: root
     group: root
     mode: "0755"
-    recurse: yes
+
+- name: Create WordPress core directory
+  file:
+    path: "/srv/wp/{{ site_name }}/wp"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
 
 - name: Create wp-content directory
   file:
@@ -15,7 +21,6 @@
     owner: www-data
     group: www-data
     mode: "0755"
-    recurse: yes
 
 - name: Create MariaDB data directory
   file:
@@ -24,7 +29,6 @@
     owner: 1001
     group: 1001
     mode: "0755"
-    recurse: yes
 
 - name: Create Nginx config file placeholder
   file:

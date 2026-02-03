@@ -8,9 +8,9 @@ docker_volumes:
   crowdsec_data: {}
   traefik_data: {}
   cloudflared_data: {}
-#  petitsanglais_wp: {}
-#  petitsanglais_db: {}
-#  petitsanglais_nginx_conf: {}
+  petitsanglais_wp: {}
+  petitsanglais_db: {}
+  petitsanglais_nginx_conf: {}
 #  hantaweb_wp: {}
 #  hantaweb_db: {}
 #  hantaweb_nginx_conf: {}

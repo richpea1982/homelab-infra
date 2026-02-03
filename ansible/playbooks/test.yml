@@ -1,6 +1,6 @@
 ---
-- name: Deploy cloudlared
-  hosts: docker-srv
+- name: Full server deployment
+  hosts: vm82
   become: true
 
   vars_files:
@@ -11,4 +11,15 @@
     - ../group_vars/all/domains.yml
 
   roles:
+    - docker
+    - docker-networks
+    - docker-volumes
+    - traefik
     - cloudflared
+    - cfjason
+    - crowdsec
+    - monitoring
+    - dozzle
+#    - terraform
+    - bentopdf
+    - wp-sites/petitsanglais

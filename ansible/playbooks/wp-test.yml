@@ -1,7 +1,10 @@
 ---
-- name: Full server deployment
-  hosts: docker-srv
+- name: Deploy WordPress site richweb
+  hosts: vm82
   become: true
+
+  vars:
+    site_name: "petitsanglais"
 
   vars_files:
     - ../group_vars/all/vault.yml
@@ -11,16 +14,12 @@
     - ../group_vars/all/domains.yml
 
   roles:
-    - docker
-    - docker-networks
-    - docker-volumes
-    - traefik
-    - cfjson
-    - cloudflared
-    - crowdsec
-    - monitoring
-    - dozzle
-#    - terraform
-    - bentopdf
-    - wp-sites/richweb
+    - wp-restet
+#    - docker-volumes
+#    - docker-networks
     - wp-sites/petitsanglais
+
+#  tasks:
+#    - import_role:
+#        name: cloudflared
+#        tasks_from: dns-ingress.yml

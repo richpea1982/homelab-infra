@@ -1,6 +1,6 @@
 ---
-- name: Deploy Traefik on docker-srv
-  hosts: docker-srv
+- name: Deploy terraform
+  hosts: srv2
   become: true
 
   vars_files:
@@ -11,4 +11,5 @@
     - ../group_vars/all/domains.yml
 
   roles:
-    - traefik
+    - terraform
+

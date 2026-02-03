@@ -140,40 +140,42 @@ services:
 
   # ---- WORDPRESS SITES ----
 
-  esperance:
-    nginx:
-      image: "{{ wp_images.nginx }}"
-      networks:
-        - wpsites_net
-        - esperance_net
-      volumes:
-        - esperance_wp
-        - esperance_nginx_conf
-      domains:
-        - "{{ esperanceorg_domain }}"
-        - "{{ esperancefr_domain }}"
-      traefik_enabled: true
+  # esperance:
+  #   nginx:
+  #     traefik_network: "wpsites_net"
+  #     image: "{{ wp_images.nginx }}"
+  #     networks:
+  #       - wpsites_net
+  #       - esperance_net
+  #     volumes:
+  #       - esperance_wp
+  #       - esperance_nginx_conf
+  #     domains:
+  #       - "{{ esperanceorg_domain }}"
+  #       - "{{ esperancefr_domain }}"
+  #     traefik_enabled: true
 
-    wp_php:
-      image: "{{ wp_images.wp_php }}"
-      networks:
-        - esperance_net
-      volumes:
-        - esperance_wp
-
-    mariadb:
-      image: "{{ wp_images.mariadb }}"
-      networks:
-        - esperance_net
-      volumes:
-        - esperance_db
-
+    # wp_php:
+    #   image: "{{ wp_images.wp_php }}"
+    #   networks:
+    #     - esperance_net
+    #   volumes:
+    #     - esperance_wp
+    #
+    # mariadb:
+    #   image: "{{ wp_images.mariadb }}"
+    #   networks:
+    #     - esperance_net
+    #   volumes:
+    #     - esperance_db
+    #
 
   richweb:
     cloudflared_enabled: true
     cloudflared_origin_verify: true
-    
+
     nginx:
+      traefik_network: "wpsites_net"
       image: "{{ wp_images.nginx }}"
       networks:
         - wpsites_net
@@ -200,36 +202,40 @@ services:
         - richweb_db
 
 
-  hantaweb:
-    nginx:
-      image: "{{ wp_images.nginx }}"
-      networks:
-        - wpsites_net
-        - hantaweb_net
-      volumes:
-        - hantaweb_wp
-        - hantaweb_nginx_conf
-      domains:
-        - "hantaweb.example.com"
-      traefik_enabled: true
-
-    wp_php:
-      image: "{{ wp_images.wp_php }}"
-      networks:
-        - hantaweb_net
-      volumes:
-        - hantaweb_wp
-
-    mariadb:
-      image: "{{ wp_images.mariadb }}"
-      networks:
-        - hantaweb_net
-      volumes:
-        - hantaweb_db
-
+  # hantaweb:
+  #   nginx:
+  #     traefik_network: "wpsites_net"
+  #     image: "{{ wp_images.nginx }}"
+  #     networks:
+  #       - wpsites_net
+  #       - hantaweb_net
+  #     volumes:
+  #       - hantaweb_wp
+  #       - hantaweb_nginx_conf
+  #     domains:
+  #       - "hantaweb.example.com"
+  #     traefik_enabled: true
+  #
+  #   wp_php:
+  #     image: "{{ wp_images.wp_php }}"
+  #     networks:
+  #       - hantaweb_net
+  #     volumes:
+  #       - hantaweb_wp
+  #
+  #   mariadb:
+  #     image: "{{ wp_images.mariadb }}"
+  #     networks:
+  #       - hantaweb_net
+  #     volumes:
+  #       - hantaweb_db
 
   petitsanglais:
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+
     nginx:
+      traefik_network: "wpsites_net"
       image: "{{ wp_images.nginx }}"
       networks:
         - wpsites_net
@@ -239,6 +245,7 @@ services:
         - petitsanglais_nginx_conf
       domains:
         - "{{ petitsanglais_domain }}"
+        - www."{{ petitsanglais_domain }}"
       traefik_enabled: true
 
     wp_php:

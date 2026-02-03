@@ -1,7 +1,10 @@
 ---
-- name: Deploy Traefik on docker-srv
+- name: Deploy WordPress site petitsanglais
   hosts: docker-srv
   become: true
+
+  vars:
+    site_name: "petitsanglais"
 
   vars_files:
     - ../group_vars/all/vault.yml
@@ -11,4 +14,9 @@
     - ../group_vars/all/domains.yml
 
   roles:
-    - traefik
+    - wp-sites/petitsanglais
+
+  tasks:
+    - import_role:
+        name: cloudflared
+        tasks_from: dns-ingress.yml

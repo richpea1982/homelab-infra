@@ -1,0 +1,28 @@
+- name: Ensure /opt/cloudflared exists
+  file:
+    path: /opt/cloudflared
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Find Cloudflare tunnel credential files in home directory
+  find:
+    paths: "/home/{{ ansible_user }}"
+    patterns: "*.json"
+    file_type: file
+  register: cf_tunnel_files
+
+- name: Move Cloudflare tunnel credential files to /opt/cloudflared
+  command: mv "{{ item.path }}" "/opt/cloudflared/"
+  loop: "{{ cf_tunnel_files.files }}"
+  when: cf_tunnel_files.matched > 0
+
+- name: Fix permissions on Cloudflare tunnel credentials
+  file:
+    path: "/opt/cloudflared/{{ item.path | basename }}"
+    owner: 65532
+    group: 65532
+    mode: "0600"
+  loop: "{{ cf_tunnel_files.files }}"
+  when: cf_tunnel_files.matched > 0

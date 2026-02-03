@@ -27,9 +27,9 @@ docker_networks:
   #   driver: bridge
   #   attachable: true
   #
-  # petitsanglais_net:
-  #   driver: bridge
-  #   attachable: true
+  petitsanglais_net:
+    driver: bridge
+    attachable: true
 
   richweb_net:
     driver: bridge
