@@ -4,6 +4,8 @@
     src: "docker-compose.yml.j2"
     dest: "/srv/wp/{{ site_name }}/docker-compose.yml"
     mode: "0644"
+  vars:
+    site: "{{ services[site_name] }}"
 
 - name: Template nginx.conf
   template:

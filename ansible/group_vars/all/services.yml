@@ -7,16 +7,6 @@ services:
 
   # ---- EDGE NETWORK ----
 
-  root:
-    image: ""
-    domains:
-      - "{{ root_domain }}"
-    cloudflared_enabled: true
-    cloudflared_origin_verify: true
-    networks: []
-    volumes: []
-    traefik_enabled: false
-
   traefik:
     image: "traefik:v3.6"
     networks:
@@ -31,6 +21,7 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
 
   cloudflared:
     image: "cloudflare/cloudflared:2026.1.1"
@@ -72,6 +63,7 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
 
   prometheus:
     image: "prom/prometheus:v3.9.1"
@@ -85,6 +77,7 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
 
   loki:
     image: "grafana/loki:3.6.4"
@@ -99,6 +92,7 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
 
   promtail:
     image: "grafana/promtail:3.6.4"
@@ -137,42 +131,16 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
 
   # ---- WORDPRESS SITES ----
-
-  # esperance:
-  #   nginx:
-  #     traefik_network: "wpsites_net"
-  #     image: "{{ wp_images.nginx }}"
-  #     networks:
-  #       - wpsites_net
-  #       - esperance_net
-  #     volumes:
-  #       - esperance_wp
-  #       - esperance_nginx_conf
-  #     domains:
-  #       - "{{ esperanceorg_domain }}"
-  #       - "{{ esperancefr_domain }}"
-  #     traefik_enabled: true
-
-    # wp_php:
-    #   image: "{{ wp_images.wp_php }}"
-    #   networks:
-    #     - esperance_net
-    #   volumes:
-    #     - esperance_wp
-    #
-    # mariadb:
-    #   image: "{{ wp_images.mariadb }}"
-    #   networks:
-    #     - esperance_net
-    #   volumes:
-    #     - esperance_db
-    #
 
   richweb:
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
+    domains:
+      - "{{ richweb_domain }}"
 
     nginx:
       traefik_network: "wpsites_net"
@@ -201,38 +169,13 @@ services:
       volumes:
         - richweb_db
 
-
-  # hantaweb:
-  #   nginx:
-  #     traefik_network: "wpsites_net"
-  #     image: "{{ wp_images.nginx }}"
-  #     networks:
-  #       - wpsites_net
-  #       - hantaweb_net
-  #     volumes:
-  #       - hantaweb_wp
-  #       - hantaweb_nginx_conf
-  #     domains:
-  #       - "hantaweb.example.com"
-  #     traefik_enabled: true
-  #
-  #   wp_php:
-  #     image: "{{ wp_images.wp_php }}"
-  #     networks:
-  #       - hantaweb_net
-  #     volumes:
-  #       - hantaweb_wp
-  #
-  #   mariadb:
-  #     image: "{{ wp_images.mariadb }}"
-  #     networks:
-  #       - hantaweb_net
-  #     volumes:
-  #       - hantaweb_db
-
   petitsanglais:
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+    cloudflare_zone: "{{ petitsanglais_domain }}"
+    domains:
+      - "{{ petitsanglais_domain }}"
+      - "www.{{ petitsanglais_domain }}"
 
     nginx:
       traefik_network: "wpsites_net"
@@ -245,7 +188,7 @@ services:
         - petitsanglais_nginx_conf
       domains:
         - "{{ petitsanglais_domain }}"
-        - www."{{ petitsanglais_domain }}"
+        - "www.{{ petitsanglais_domain }}"
       traefik_enabled: true
 
     wp_php:
@@ -262,7 +205,44 @@ services:
       volumes:
         - petitsanglais_db
 
-# ------ APPS ---------
+  esperance:
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "{{ esperanceorg_domain }}"
+    domains:
+      - "{{ esperanceorg_domain }}"
+      - "www.{{ esperanceorg_domain }}"
+
+    nginx:
+      traefik_network: "wpsites_net"
+      image: "{{ wp_images.nginx }}"
+      networks:
+        - wpsites_net
+        - esperance_net
+      volumes:
+        - esperance_wp
+        - esperance_nginx_conf
+      domains:
+        - "{{ esperanceorg_domain }}"
+        - "www.{{ esperanceorg_domain }}"
+      traefik_enabled: true
+
+    wp_php:
+      image: "{{ wp_images.wp_php }}"
+      networks:
+        - esperance_net
+      volumes:
+        - esperance_wp
+
+    mariadb:
+      image: "{{ wp_images.mariadb }}"
+      networks:
+        - esperance_net
+      volumes:
+        - esperance_db
+
+  # ------ APPS ---------
+
   bentopdf:
     image: "bentopdf/bentopdf:latest"
     networks:
@@ -273,8 +253,9 @@ services:
     traefik_enabled: true
     cloudflared_enabled: true
     cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
 
-# ------ INFRA / TOOLING ---------
+  # ------ INFRA / TOOLING ---------
 
   terraform:
     image: "hashicorp/terraform:1.14.3"
@@ -286,4 +267,3 @@ services:
     traefik_enabled: false
     cloudflared_enabled: false
     cloudflared_origin_verify: false
-

@@ -14,6 +14,7 @@
     - docker
     - docker-networks
     - docker-volumes
+    - common
     - traefik
     - cfjson
     - cloudflared
@@ -24,3 +25,4 @@
     - bentopdf
     - wp-sites/richweb
     - wp-sites/petitsanglais
+    - wp-sites/esperance

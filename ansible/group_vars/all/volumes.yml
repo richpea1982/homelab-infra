@@ -20,8 +20,8 @@ docker_volumes:
 #  esperancefr_wp: {}
 #  esperancefr_db: {}
 #  esperancefr_nginx_conf: {}
-#  esperanceorg_wp: {}
-#  esperanceorg_db: {}
-#  esperanceorg_nginx_conf: {}
+  esperance_wp: {}
+  esperance_db: {}
+  esperance_nginx_conf: {}
   terraform_data: {}
 

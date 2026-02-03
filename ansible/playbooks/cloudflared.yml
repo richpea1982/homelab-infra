@@ -11,4 +11,5 @@
     - ../group_vars/all/domains.yml
 
   roles:
+    - common
     - cloudflared

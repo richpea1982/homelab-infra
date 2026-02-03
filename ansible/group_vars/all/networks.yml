@@ -23,10 +23,10 @@ docker_networks:
   #   driver: bridge
   #   attachable: true
   #
-  # esperanceorg_net:
-  #   driver: bridge
-  #   attachable: true
-  #
+  esperance_net:
+   driver: bridge
+   attachable: true
+
   petitsanglais_net:
     driver: bridge
     attachable: true

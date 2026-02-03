@@ -1,6 +1,6 @@
 cloudflare_tunnel_hostname: "{{ cloudflare_tunnel_id }}.cfargotunnel.com"
 
-primary_domain: "pearsalls.online"
+primary_domain: "pearsalls.fr"
 
 root_domain: "{{ primary_domain }}"
 traefik_domain: "traefik.{{ primary_domain }}"
