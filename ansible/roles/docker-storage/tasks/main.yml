@@ -1,0 +1,30 @@
+---
+- name: Ensure NVMe mountpoint exists
+  file:
+    path: "{{ nvme_mount }}"
+    state: directory
+    mode: "0755"
+
+- name: Ensure export folders are owned by rich
+  file:
+    path: "{{ nvme_mount }}/{{ item }}"
+    state: directory
+    owner: rich
+    group: rich
+    mode: "0755"
+  loop: "{{ export_folders }}"
+
+- name: Mount NVMe using filesystem label
+  mount:
+    path: "{{ nvme_mount }}"
+    src: "LABEL={{ nvme_label }}"
+    fstype: ext4
+    opts: "defaults,noatime"
+    state: mounted
+
+- name: Create media folders on NVMe
+  file:
+    path: "{{ nvme_mount }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ nvme_folders }}"

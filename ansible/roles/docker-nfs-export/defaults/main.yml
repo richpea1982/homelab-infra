@@ -1,0 +1,9 @@
+---
+nvme_mount: "/mnt/dock-nvme"
+
+export_folders:
+  - Music
+  - Photos
+
+# Replace with your actual proxmox IP
+proxmox_host: "proxmox-srv"

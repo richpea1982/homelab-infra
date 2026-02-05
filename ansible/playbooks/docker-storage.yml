@@ -1,0 +1,6 @@
+---
+- name: Configure docker-srv NVMe storage
+  hosts: docker-srv
+  become: yes
+  roles:
+    - docker-storage

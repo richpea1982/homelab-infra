@@ -1,0 +1,6 @@
+---
+- name: Configure Proxmox storage
+  hosts: proxmox-srv
+  become: yes
+  roles:
+    - proxmox-storage

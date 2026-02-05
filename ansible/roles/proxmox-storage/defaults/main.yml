@@ -1,0 +1,14 @@
+---
+# The filesystem label you assigned
+nvme_label: "prox-nvme"
+
+# Where the physical filesystem is mounted
+nvme_mount: "/mnt/nvme"
+
+# Logical storage namespace
+storage_root: "/storage"
+
+# Folders you want bind-mounted into /storage
+nvme_folders:
+  - DVDs
+  # Add more later: Backups, ISOs, Books, etc.

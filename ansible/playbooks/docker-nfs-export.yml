@@ -1,0 +1,7 @@
+---
+- name: Configure docker-srv storage exports
+  hosts: docker-srv
+  become: yes
+  roles:
+    - docker-storage
+    - docker-nfs-export

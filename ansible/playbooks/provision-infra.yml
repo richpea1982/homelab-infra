@@ -1,0 +1,68 @@
+---
+- name: Provision infrastructure with Terraform (ephemeral container)
+  hosts: docker-srv
+  become: true
+  gather_facts: false
+
+  vars:
+    terraform_workdir: /srv/data/terraform_data
+    terraform_src: "{{ playbook_dir }}/../../terraform/"
+
+  vars_files:
+    - ../group_vars/all/vault.yml
+
+  tasks:
+
+    # 1. Ensure Terraform working directory exists on docker-srv
+    - name: Ensure Terraform working directory exists
+      file:
+        path: "{{ terraform_workdir }}"
+        state: directory
+        mode: "0755"
+
+    # 2. Sync Terraform configuration from repo to docker-srv
+    - name: Sync Terraform files to docker-srv
+      copy:
+        src: "{{ terraform_src }}"
+        dest: "{{ terraform_workdir }}/"
+        owner: root
+        group: root
+        mode: "0644"
+
+    # # 2. Remove previous Terraform state
+    # - name: Remove previous local Terraform state directory
+    #   file:
+    #     path: "{{ terraform_workdir }}/.terraform"
+    #     state: absent
+    #
+    # - name: Remove previous Terraform lock file
+    #   file:
+    #     path: "{{ terraform_workdir }}/.terraform.lock.hcl"
+    #     state: absent
+
+    # 4. Render secrets file from Vault variables
+    - name: Render Terraform secrets file from vault variables
+      template:
+        src: "{{ playbook_dir }}/../templates/terraform-secrets.auto.tfvars.j2"
+        dest: "{{ terraform_workdir }}/terraform-secrets.auto.tfvars"
+        owner: root
+        group: root
+        mode: "0600"
+
+    # 5. Terraform init in ephemeral container
+    - name: Terraform init (ephemeral container)
+      command: >
+        docker run --rm
+        -v {{ terraform_workdir }}:/data
+        -w /data
+        hashicorp/terraform:1.9.8
+        init
+
+    # 6. Terraform apply in ephemeral container
+    - name: Terraform apply (ephemeral container)
+      command: >
+        docker run --rm
+        -v {{ terraform_workdir }}:/data
+        -w /data
+        hashicorp/terraform:1.9.8
+        apply -auto-approve

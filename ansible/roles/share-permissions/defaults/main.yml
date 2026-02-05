@@ -1,0 +1,9 @@
+---
+media_group: "mediawriters"
+
+media_users:
+  - rich
+  - kiwi
+
+# Override per host in host_vars
+shared_folders: []

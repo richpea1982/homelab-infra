@@ -1,0 +1,8 @@
+---
+nvme_label: "dock-nvme"
+
+nvme_mount: "/mnt/dock-nvme"
+
+nvme_folders:
+  - Music
+  - Photos

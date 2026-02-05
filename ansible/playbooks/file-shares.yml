@@ -1,0 +1,27 @@
+---
+# ============================================================
+#  FILE-SHARES: Full storage setup for docker + proxmox
+# ============================================================
+
+# ------------------------------------------------------------
+# 1. Configure docker-srv (NFS server)
+# ------------------------------------------------------------
+- name: Configure docker-srv storage and exports
+  hosts: docker-srv
+  become: yes
+  roles:
+    - docker-storage          # Mount NVMe + create folders
+    - share-permissions       # Ensure users/groups + fix perms
+    - docker-nfs-export       # Install NFS + export shares
+
+
+# ------------------------------------------------------------
+# 2. Configure proxmox-srv (NFS client + local storage)
+# ------------------------------------------------------------
+- name: Configure proxmox storage and NFS mounts
+  hosts: proxmox-srv
+  become: yes
+  roles:
+    - proxmox-storage         # Mount NVMe + create DVDs folder
+    - share-permissions       # Ensure users/groups + fix perms
+    - proxmox-nfs-client      # Mount NFS shares from docker-srv

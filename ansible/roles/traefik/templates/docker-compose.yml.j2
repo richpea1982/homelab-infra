@@ -44,6 +44,25 @@ services:
     command:
       - "--configFile=/traefik.yml"
 
+  redirect-eglise:
+    image: traefik/whoami
+    container_name: redirect_eglise
+    labels:
+      - "traefik.enable=true"
+
+      # Router for both domains
+      - "traefik.http.routers.eglise.rule=Host(`egliseesperanceagde.fr`) || Host(`www.egliseesperanceagde.fr`)"
+      - "traefik.http.routers.eglise.entrypoints=websecure"
+      - "traefik.http.routers.eglise.tls.certresolver=cloudflare"
+
+      # Redirect middleware
+      - "traefik.http.middlewares.eglise-redirect.redirectregex.regex=^https?://(www\\.)?egliseesperanceagde\\.fr/(.*)"
+      - "traefik.http.middlewares.eglise-redirect.redirectregex.replacement=https://epagde.wixsite.com/esperance34/$$2"
+      - "traefik.http.middlewares.eglise-redirect.redirectregex.permanent=true"
+
+      # Attach middleware to router
+      - "traefik.http.routers.eglise.middlewares=eglise-redirect"
+
   crowdsec:
     image: "{{ services.crowdsec.image }}"
     container_name: crowdsec

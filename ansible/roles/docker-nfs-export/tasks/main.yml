@@ -1,0 +1,23 @@
+---
+- name: Install NFS server
+  apt:
+    name: nfs-kernel-server
+    state: present
+    update_cache: yes
+
+- name: Ensure export folders exist
+  file:
+    path: "{{ nvme_mount }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ export_folders }}"
+
+- name: Configure NFS exports
+  lineinfile:
+    path: /etc/exports
+    line: "{{ nvme_mount }}/{{ item }}  {{ proxmox_host }}(rw,sync,no_subtree_check,no_root_squash)"
+    state: present
+  loop: "{{ export_folders }}"
+
+- name: Reload NFS exports
+  command: exportfs -ra

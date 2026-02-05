@@ -1,0 +1,7 @@
+---
+- name: Configure proxmox storage
+  hosts: proxmox-srv
+  become: yes
+  roles:
+    - proxmox-storage
+    - proxmox-nfs-client

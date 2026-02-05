@@ -262,7 +262,7 @@ services:
     networks:
       - terra_net
     volumes:
-      - "terraform_data:/data"
+      - /srv/data/terraform_data:/data
     domains: []
     traefik_enabled: false
     cloudflared_enabled: false

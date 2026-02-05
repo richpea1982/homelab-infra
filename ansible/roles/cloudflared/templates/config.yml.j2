@@ -26,4 +26,15 @@ ingress:
 {%   endif %}
 {% endfor %}
 
+  - hostname: "egliseesperanceagde.fr"
+    service: https://traefik:443
+    originRequest:
+      noTLSVerify: true
+  - hostname: "www.egliseesperanceagde.fr"
+    service: https://traefik:443
+    originRequest:
+      noTLSVerify: true
+
+
+
   - service: http_status:404

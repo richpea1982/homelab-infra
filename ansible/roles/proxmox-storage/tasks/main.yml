@@ -1,0 +1,40 @@
+---
+- name: Ensure base directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ nvme_mount }}"
+    - "{{ storage_root }}"
+
+- name: Mount NVMe using filesystem label
+  mount:
+    path: "{{ nvme_mount }}"
+    src: "LABEL={{ nvme_label }}"
+    fstype: ext4
+    opts: "defaults,noatime"
+    state: mounted
+
+- name: Create subfolders on NVMe (AFTER mount)
+  file:
+    path: "{{ nvme_mount }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ nvme_folders }}"
+
+- name: Create bind mountpoints under /storage
+  file:
+    path: "{{ storage_root }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ nvme_folders }}"
+
+- name: Bind mount NVMe subfolders into /storage
+  mount:
+    path: "{{ storage_root }}/{{ item }}"
+    src: "{{ nvme_mount }}/{{ item }}"
+    fstype: none
+    opts: "bind"
+    state: mounted
+  loop: "{{ nvme_folders }}"

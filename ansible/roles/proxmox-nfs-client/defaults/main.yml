@@ -1,0 +1,8 @@
+---
+docker_host: "docker-srv"
+
+storage_root: "/storage"
+
+nfs_folders:
+  - Music
+  - Photos

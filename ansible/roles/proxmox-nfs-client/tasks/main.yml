@@ -1,0 +1,16 @@
+---
+- name: Ensure storage mountpoints exist
+  file:
+    path: "{{ storage_root }}/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ nfs_folders }}"
+
+- name: Mount NFS shares from docker-srv
+  mount:
+    path: "{{ storage_root }}/{{ item }}"
+    src: "{{ docker_host }}:/mnt/dock-nvme/{{ item }}"
+    fstype: nfs
+    opts: "defaults,noatime"
+    state: mounted
+  loop: "{{ nfs_folders }}"

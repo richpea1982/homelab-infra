@@ -1,0 +1,22 @@
+---
+- name: Ensure media group exists
+  group:
+    name: "{{ media_group }}"
+    state: present
+
+- name: Ensure media users exist and are in the media group
+  user:
+    name: "{{ item }}"
+    state: present
+    groups: "{{ media_group }}"
+    append: yes
+  loop: "{{ media_users }}"
+
+- name: Ensure shared folders have correct ownership and permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "rich"
+    group: "{{ media_group }}"
+    mode: "0775"
+  loop: "{{ shared_folders }}"
