@@ -1,0 +1,44 @@
+---
+- name: Ensure restic cache directory exists
+  file:
+    path: /var/cache/restic/{{ repo.name }}
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Ensure /etc/restic directory exists
+  file:
+    path: /etc/restic
+    state: directory
+    owner: "{{ restic_user }}"
+    group: "{{ restic_group }}"
+    mode: '0750'
+
+- name: Ensure restic repo directories exist
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ restic_user }}"
+    group: "{{ restic_group }}"
+    mode: '0750'
+  loop: "{{ restic_repos }}"
+
+- name: Ensure password files exist (use vault value if provided, else generate)
+  copy:
+    dest: "{{ item.password_file }}"
+    content: "{{ item.password | default(lookup('password', '/dev/null length=32 chars=ascii_letters')) }}"
+    owner: "{{ restic_user }}"
+    group: "{{ restic_group }}"
+    mode: '0600'
+    force: no
+  loop: "{{ restic_repos }}"
+
+- name: Initialize restic repositories if empty
+  command: "restic -r {{ item.path }} init --password-file {{ item.password_file }}"
+  args:
+    creates: "{{ item.path }}/config"
+  loop: "{{ restic_repos }}"

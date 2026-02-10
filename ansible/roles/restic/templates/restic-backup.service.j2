@@ -1,0 +1,10 @@
+[Unit]
+Description=Restic backup for {{ repo.name }}
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/restic/{{ repo.name }}.env
+ExecStart=/usr/bin/restic backup{% for p in restic_backup_paths %} {{ p }}{% endfor %}{% for e in restic_excludes %} --exclude={{ e }}{% endfor %}
+Nice=10

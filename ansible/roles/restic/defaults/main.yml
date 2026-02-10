@@ -1,0 +1,48 @@
+restic_version: latest
+
+restic_repos:
+  - name: local
+    path: /restic
+    password_file: /etc/restic/local.pass
+  - name: external
+    path: /backups/restic
+    password_file: /etc/restic/external.pass
+
+restic_backup_paths:
+  - /etc
+  - /home
+  - /var/lib/docker/volumes
+  - /opt
+  - /srv
+
+restic_excludes:
+  # Service logs
+  - "/opt/*/logs"
+  - "*.log"
+
+  # WordPress caches
+  - "/srv/wp/*/wp-content/cache"
+  - "/srv/wp/*/wp-content/unlimited_elements_cache"
+  - "/srv/wp/*/wp-content/elementor"
+  - "/srv/wp/*/wp-content/essential-addons-elementor"
+  - "/srv/wp/*/wp-content/uag-plugin"
+
+  # WordPress upgrade temp dirs
+  - "/srv/wp/*/wp-content/upgrade"
+  - "/srv/wp/*/wp-content/upgrade-temp-backup"
+
+  # WordPress debug logs
+  - "/srv/wp/*/wp-content/debug.log"
+
+  # MariaDB internal metadata (safe to exclude)
+  - "/srv/wp/*/db/mysql"
+  - "/srv/wp/*/db/performance_schema"
+  - "/srv/wp/*/db/sys"
+
+restic_retention:
+  daily: 5
+  weekly: 3
+  monthly: 2
+
+restic_user: root
+restic_group: root

@@ -1,4 +1,5 @@
 ---
+# -------- NVME Drrive ------
 - name: Ensure NVMe mountpoint exists
   file:
     path: "{{ nvme_mount }}"
@@ -12,7 +13,7 @@
     owner: rich
     group: rich
     mode: "0755"
-  loop: "{{ export_folders }}"
+  loop: "{{ nvme_folders }}"
 
 - name: Mount NVMe using filesystem label
   mount:
@@ -28,3 +29,19 @@
     state: directory
     mode: "0755"
   loop: "{{ nvme_folders }}"
+
+# ------- External SSD -----------
+- name: Ensure ssd mountpoint exists
+  file:
+    path: "{{ backup_mount }}"
+    state: directory
+    mode: "0755"
+
+- name: Mount ssd using filesystem label
+  mount:
+    path: "{{ backup_mount }}"
+    src: "LABEL={{ backup_label }}"
+    fstype: ext4
+    opts: "defaults,noatime"
+    state: mounted
+

@@ -1,0 +1,26 @@
+# roles/restic/tasks/backup.yml
+
+- name: Deploy backup systemd service
+  template:
+    src: restic-backup.service.j2
+    dest: /etc/systemd/system/restic-backup-{{ repo.name }}.service
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Deploy backup systemd timer
+  template:
+    src: restic-backup.timer.j2
+    dest: /etc/systemd/system/restic-backup-{{ repo.name }}.timer
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Enable and start backup timers
+  systemd:
+    name: "restic-backup-{{ repo.name }}.timer"
+    enabled: yes
+    state: started
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo

@@ -1,0 +1,12 @@
+---
+- name: Configure Restic backups on docker-srv
+  hosts: docker-srv
+  become: yes
+  serial: 1
+  
+  vars_files:
+    - ../group_vars/all/restic-vault.yml
+
+
+  roles:
+    - role: restic

@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily restic backup for {{ repo.name }}
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

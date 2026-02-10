@@ -1,0 +1,26 @@
+# roles/restic/tasks/prune.yml
+
+- name: Deploy prune systemd service
+  template:
+    src: restic-prune.service.j2
+    dest: /etc/systemd/system/restic-prune-{{ repo.name }}.service
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Deploy prune systemd timer
+  template:
+    src: restic-prune.timer.j2
+    dest: /etc/systemd/system/restic-prune-{{ repo.name }}.timer
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Enable prune timers
+  systemd:
+    name: "restic-prune-{{ repo.name }}.timer"
+    enabled: yes
+    state: started
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo

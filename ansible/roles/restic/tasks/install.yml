@@ -1,0 +1,6 @@
+---
+- name: Install restic
+  apt:
+    name: restic
+    state: present
+    update_cache: yes

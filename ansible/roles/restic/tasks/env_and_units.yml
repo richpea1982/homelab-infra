@@ -1,0 +1,89 @@
+---
+- name: Deploy restic environment file for each repo
+  template:
+    src: restic-env.j2
+    dest: /etc/restic/{{ repo.name }}.env
+    owner: root
+    group: root
+    mode: '0640'
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Deploy backup systemd service
+  template:
+    src: restic-backup.service.j2
+    dest: /etc/systemd/system/restic-backup-{{ repo.name }}.service
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Deploy backup systemd timer
+  template:
+    src: restic-backup.timer.j2
+    dest: /etc/systemd/system/restic-backup-{{ repo.name }}.timer
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Deploy prune systemd service
+  template:
+    src: restic-prune.service.j2
+    dest: /etc/systemd/system/restic-prune-{{ repo.name }}.service
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Deploy prune systemd timer
+  template:
+    src: restic-prune.timer.j2
+    dest: /etc/systemd/system/restic-prune-{{ repo.name }}.timer
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Reload systemd to pick up new units
+  command: systemctl daemon-reload
+  become: true
+
+- name: Enable and start backup timers
+  systemd:
+    name: "restic-backup-{{ repo.name }}.timer"
+    enabled: yes
+    state: started
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Enable and start prune timers
+  systemd:
+    name: "restic-prune-{{ repo.name }}.timer"
+    enabled: yes
+    state: started
+  loop: "{{ restic_repos }}"
+  loop_control:
+    loop_var: repo
+
+- name: Optionally run a one-off backup immediately
+  when: restic_run_immediately | default(false) | bool
+  block:
+    - name: Start restic backup service now
+      systemd:
+        name: "restic-backup-{{ repo.name }}.service"
+        state: started
+      loop: "{{ restic_repos }}"
+      loop_control:
+        loop_var: repo
+
