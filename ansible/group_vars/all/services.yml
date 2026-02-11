@@ -12,7 +12,6 @@ services:
     networks:
       - CF_net
       - internal_net
-      - wpsites_net
       - apps_net
     volumes:
       - traefik_data
@@ -251,6 +250,17 @@ services:
     domains:
       - "{{ bentopdf_domain }}"
     traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
+
+  semaphore:
+    version: "v1.16.51"
+    networks: []
+    volumes: []
+    domains:
+      - "{{ semaphore_domain }}"
+    traefik_enabled: false
     cloudflared_enabled: true
     cloudflared_origin_verify: true
     cloudflare_zone: "{{ root_domain }}"

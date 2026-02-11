@@ -1,0 +1,11 @@
+services:
+  terraform:
+    image: "hashicorp/terraform:1.14.3"
+    networks:
+      - terra_net
+    volumes:
+      - /srv/data/terraform_data:/data
+    domains: []
+    traefik_enabled: false
+    cloudflared_enabled: false
+    cloudflared_origin_verify: false

@@ -1,0 +1,41 @@
+# roles/semaphore/defaults/main.yml
+---
+# Semaphore binary release (include leading "v" if the GitHub tag uses it)
+semaphore_version: "v2.16.51"
+
+# Architecture detection (override if needed)
+semaphore_arch: "{{ 'amd64' if ansible_architecture in ['x86_64','amd64'] else ansible_architecture }}"
+
+# Paths and runtime
+semaphore_install_path: /usr/local/bin/semaphore
+semaphore_workdir: /var/lib/semaphore
+semaphore_config_dir: /etc/semaphore
+
+# Database defaults (non-secret)
+semaphore_db_host: 127.0.0.1
+semaphore_db_port: 3306
+semaphore_db_name: semaphore
+semaphore_db_user: semaphore
+
+# Bind and base URL
+semaphore_bind_addr: "0.0.0.0:3000"
+semaphore_base_url: "http://{{ ansible_fqdn | default(ansible_hostname) }}:3000"
+
+# Start behavior
+semaphore_start_immediately: true
+
+# Download URL (computed from version and arch)
+# Uses the semaphoreui GitHub repo and strips a leading "v" from the filename portion,
+# matching the common release asset naming convention.
+semaphore_download_url: >-
+  https://github.com/semaphoreui/semaphore/releases/download/{{ semaphore_version }}/semaphore_{{ semaphore_version | regex_replace('^v','') }}_linux_{{ semaphore_arch }}.tar.gz
+
+# Optional override token for private or rate-limited downloads (leave empty if unused)
+semaphore_download_token: ""
+
+# Local defaults for generated passwords (only used if not provided via vault or -e)
+# These defaults intentionally use lookups so they are generated at runtime if needed.
+semaphore_db_pass: "{{ lookup('password', '/dev/null length=24 chars=ascii_letters') }}"
+semaphore_admin_user: "admin"
+semaphore_admin_email: "admin@localhost"
+semaphore_admin_password: "{{ lookup('password', '/dev/null length=20 chars=ascii_letters') }}"

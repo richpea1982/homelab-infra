@@ -1,0 +1,15 @@
+services:
+  crowdsec:
+    image: "crowdsecurity/crowdsec:v1.7.6"
+    networks: []
+    volumes:
+      - crowdsec_data
+    domains: []
+    traefik_enabled: false
+
+  cf_bouncer:
+    image: "crowdsecurity/cloudflare-bouncer:v0.3.0"
+    networks: []
+    volumes: []
+    domains: []
+    traefik_enabled: false

@@ -1,0 +1,112 @@
+wp_images:
+  nginx: "nginx:1.26-alpine"
+  wp_php: "wordpress:php8.4-fpm"
+  mariadb: "mariadb:11.8"
+
+services:
+
+  richweb:
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "pearsalls.fr"
+    domains:
+      - "richard.pearsalls.fr"
+
+    nginx:
+      traefik_network: "wpsites_net"
+      image: "nginx:1.26-alpine"
+      networks:
+        - wpsites_net
+        - richweb_net
+      volumes:
+        - richweb_wp
+        - richweb_nginx_conf
+      domains:
+        - "richard.pearsalls.fr"
+      traefik_enabled: true
+
+    wp_php:
+      image: "wordpress:php8.4-fpm"
+      networks:
+        - richweb_net
+      volumes:
+        - richweb_wp
+
+    mariadb:
+      image: "mariadb:11.8"
+      networks:
+        - richweb_net
+      volumes:
+        - richweb_db
+
+  petitsanglais:
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "petitsanglaisabeziers.fr"
+    domains:
+      - "petitsanglaisabeziers.fr"
+      - "www.petitsanglaisabeziers.fr"
+
+    nginx:
+      traefik_network: "wpsites_net"
+      image: "nginx:1.26-alpine"
+      networks:
+        - wpsites_net
+        - petitsanglais_net
+      volumes:
+        - petitsanglais_wp
+        - petitsanglais_nginx_conf
+      domains:
+        - "petitsanglaisabeziers.fr"
+        - "www.petitsanglaisabeziers.fr"
+      traefik_enabled: true
+
+    wp_php:
+      image: "wordpress:php8.4-fpm"
+      networks:
+        - petitsanglais_net
+      volumes:
+        - petitsanglais_wp
+
+    mariadb:
+      image: "mariadb:11.8"
+      networks:
+        - petitsanglais_net
+      volumes:
+        - petitsanglais_db
+
+  esperance:
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "egliseesperanceagde.org"
+    domains:
+      - "egliseesperanceagde.org"
+      - "www.egliseesperanceagde.org"
+
+    nginx:
+      traefik_network: "wpsites_net"
+      image: "nginx:1.26-alpine"
+      networks:
+        - wpsites_net
+        - esperance_net
+      volumes:
+        - esperance_wp
+        - esperance_nginx_conf
+      domains:
+        - "egliseesperanceagde.org"
+        - "www.egliseesperanceagde.org"
+      traefik_enabled: true
+
+    wp_php:
+      image: "wordpress:php8.4-fpm"
+      networks:
+        - esperance_net
+      volumes:
+        - esperance_wp
+
+    mariadb:
+      image: "mariadb:11.8"
+      networks:
+        - esperance_net
+      volumes:
+        - esperance_db

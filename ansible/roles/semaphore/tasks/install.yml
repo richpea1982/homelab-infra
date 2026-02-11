@@ -1,0 +1,17 @@
+---
+- name: Install required packages
+  apt:
+    name:
+      - curl
+      - tar
+      - gnupg
+      - lsb-release
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Ensure MariaDB server is installed
+  apt:
+    name: mariadb-server
+    state: present
+  become: true

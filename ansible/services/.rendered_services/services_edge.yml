@@ -1,0 +1,25 @@
+services:
+  traefik:
+    image: "traefik:v3.6"
+    networks:
+      - CF_net
+      - internal_net
+      - wpsites_net
+      - apps_net
+    volumes:
+      - traefik_data
+    domains:
+      - "traefik.pearsalls.fr"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "pearsalls.fr"
+
+  cloudflared:
+    image: "cloudflare/cloudflared:2026.1.1"
+    networks:
+      - CF_net
+    volumes:
+      - cloudflared_data
+    domains: []
+    traefik_enabled: false

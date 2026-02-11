@@ -1,0 +1,22 @@
+{
+ 	"mysql": {
+ 		"host": "{{ semaphore_db_host }}",
+		"port": {{ semaphore_db_port }},
+ 		"user": "{{ semaphore_user }}",
+ 		"pass": "{{ semaphore_password }}",
+ 		"name": "semaphore"
+ 	},
+ 	"dialect": "{{ semaphore_dialect }}",
+ 	"tmp_path": "{{ semaphore_workdir }}/projects",
+ 	"web_host": "{{ web_host }}",
+ 	"cookie_hash": "{{ cookie_hash }}",
+ 	"cookie_encryption": "{{ cookie_encryption}}",
+ 	"access_key_encryption": "{{ access_key_encryption }}",
+	"admin": {
+	"name": "{{ semaphore_user }}",
+	"email": "{{ semaphore_email }}",
+	"password": "{{ semaphore_password }}"
+	}
+
+ }
+

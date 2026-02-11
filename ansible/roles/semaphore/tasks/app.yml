@@ -1,0 +1,118 @@
+---
+- name: Ensure workdir exists
+  file:
+    path: "{{ semaphore_workdir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+
+- name: Ensure config dir exists
+  file:
+    path: "{{ semaphore_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0750'
+  become: true
+
+# ---------------------------------------------------------
+#  DEPLOY CONFIG FILES (.env and config.json)
+# ---------------------------------------------------------
+
+- name: Deploy semaphore.env
+  template:
+    src: semaphore.env.j2
+    dest: "{{ semaphore_config_dir }}/semaphore.env"
+    owner: root
+    group: root
+    mode: '0640'
+  become: true
+
+- name: Deploy config.json
+  template:
+    src: config.yml.j2
+    dest: "{{ semaphore_config_dir }}/config.json"
+    owner: root
+    group: root
+    mode: '0640'
+  become: true
+
+# ---------------------------------------------------------
+#  DOWNLOAD + INSTALL BINARY
+# ---------------------------------------------------------
+
+- name: Download semaphore archive
+  get_url:
+    url: "{{ semaphore_download_url }}"
+    dest: "/tmp/semaphore-{{ semaphore_version }}.tar.gz"
+    mode: '0644'
+  register: download_result
+  until: download_result is succeeded
+  retries: 3
+  delay: 5
+  become: true
+
+- name: Ensure temporary extract directory exists
+  file:
+    path: "/tmp/semaphore-extract"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Extract semaphore archive to temp dir
+  unarchive:
+    src: "/tmp/semaphore-{{ semaphore_version }}.tar.gz"
+    dest: "/tmp/semaphore-extract"
+    remote_src: yes
+  become: true
+
+- name: Find semaphore binary inside extracted tree
+  find:
+    paths: "/tmp/semaphore-extract"
+    patterns: semaphore
+    file_type: file
+    recurse: yes
+  register: semaphore_find
+  become: true
+
+- name: Fail if semaphore binary not found after extraction
+  fail:
+    msg: "Semaphore binary not found in archive extraction at /tmp/semaphore-extract"
+  when: semaphore_find.matched == 0
+
+- name: Set semaphore binary path fact
+  set_fact:
+    semaphore_bin_path: "{{ (semaphore_find.files | map(attribute='path') | list)[0] }}"
+  when: semaphore_find.matched > 0
+
+- name: Install semaphore binary (move into place)
+  command: mv "{{ semaphore_bin_path }}" "{{ semaphore_install_path | default('/usr/local/bin/semaphore') }}"
+  args:
+    creates: "{{ semaphore_install_path | default('/usr/local/bin/semaphore') }}"
+  become: true
+
+- name: Ensure semaphore binary is executable and owned by root
+  file:
+    path: "{{ semaphore_install_path | default('/usr/local/bin/semaphore') }}"
+    mode: '0755'
+    owner: root
+    group: root
+  become: true
+
+# ---------------------------------------------------------
+#  CLEANUP
+# ---------------------------------------------------------
+
+- name: Clean up downloaded archive
+  file:
+    path: "/tmp/semaphore-{{ semaphore_version }}.tar.gz"
+    state: absent
+  become: true
+
+- name: Remove temporary extraction directory
+  file:
+    path: "/tmp/semaphore-extract"
+    state: absent
+  become: true

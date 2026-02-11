@@ -1,0 +1,25 @@
+[Unit]
+Description=Semaphore CI server
+After=network.target
+
+[Service]
+Type=simple
+
+# Load environment variables
+EnvironmentFile={{ semaphore_config_dir }}/semaphore.env
+
+# Start semaphore with explicit config file
+ExecStart={{ semaphore_install_path }} server --config {{ semaphore_config_dir }}/config.json
+
+# Working directory for temporary files and project data
+WorkingDirectory={{ semaphore_workdir }}
+
+# Restart policy
+Restart=on-failure
+RestartSec=5
+
+# Increase file descriptor limit
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

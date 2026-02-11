@@ -1,9 +1,0 @@
----
-- name: Ensure directory structure exists
-  include_tasks: directories.yml
-
-- name: Template configuration files
-  include_tasks: templates.yml
-
-- name: Deploy docker compose stack
-  include_tasks: docker.yml

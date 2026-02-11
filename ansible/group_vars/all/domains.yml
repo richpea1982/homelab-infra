@@ -17,4 +17,4 @@ petitsanglais_domain: "petitsanglaisabeziers.fr"
 esperancefr_domain: "egliseesperanceagde.fr"
 esperanceorg_domain: "egliseesperanceagde.org"
 bentopdf_domain: "bentopdf.{{ primary_domain }}"
-
+semaphore_domaine: "semaphore.{{ primary_domain }}"

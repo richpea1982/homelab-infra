@@ -1,0 +1,32 @@
+---
+- name: Ensure MariaDB is running
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+  become: true
+
+- name: Ensure Python MySQL driver is installed on target
+  apt:
+    name: python3-pymysql
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Ensure semaphore database exists
+  community.mysql.mysql_db:
+    name: "{{ semaphore_db_name }}"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: true
+
+- name: Ensure semaphore DB user exists and has privileges
+  community.mysql.mysql_user:
+    name: "{{ semaphore_db_user }}"
+    password: "{{ semaphore_db_pass }}"
+    priv: "{{ semaphore_db_name }}.*:ALL"
+    host: "localhost"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: true
+  no_log: true

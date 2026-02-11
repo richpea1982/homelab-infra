@@ -1,0 +1,9 @@
+---
+- name: Install Semaphore CI on docker-srv
+  hosts: docker-srv
+  become: true
+  vars_files: 
+    - ../group_vars/all/semaphore_vault.yml
+    - ../group_vars/all/semaphore_vars.yml
+  roles:
+    - role: semaphore

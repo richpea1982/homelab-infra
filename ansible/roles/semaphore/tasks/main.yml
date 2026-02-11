@@ -1,0 +1,11 @@
+---
+- name: Ensure role runs as root
+  assert:
+    that:
+      - ansible_user_id == 'root' or ansible_become | bool
+    fail_msg: "This role requires privilege escalation (become: yes)."
+
+- include_tasks: install.yml
+- include_tasks: db.yml
+- include_tasks: app.yml
+- include_tasks: service.yml

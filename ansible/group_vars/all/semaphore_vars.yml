@@ -1,0 +1,31 @@
+---
+# Semaphore binary release (include leading "v" if the GitHub tag uses it)
+semaphore_version: "v2.16.51"
+
+# Architecture detection (override if needed)
+semaphore_arch: "{{ 'amd64' if ansible_architecture in ['x86_64','amd64'] else ansible_architecture }}"
+
+# Paths and runtime
+semaphore_install_path: "/usr/local/bin/semaphore"
+semaphore_workdir: "/var/lib/semaphore"
+semaphore_config_dir: "/etc/semaphore"
+
+# Database defaults (non-secret)
+semaphore_db_host: "127.0.0.1"
+semaphore_db_port: "3306"
+semaphore_db_name: "semaphore"
+semaphore_db_user: "rich"
+
+# Bind and base URL
+semaphore_bind_addr: "0.0.0.0:3000"
+semaphore_base_url: "http://{{ ansible_fqdn | default(ansible_hostname) }}:3000"
+
+semaphore_download_url: >-
+  https://github.com/semaphoreui/semaphore/releases/download/{{ semaphore_version }}/semaphore_{{ semaphore_version | regex_replace('^v','') }}_linux_{{ semaphore_arch }}.tar.gz
+
+# Start behavior
+semaphore_start_immediately: true
+
+# Optional override token for private or rate-limited downloads (leave empty if unused)
+semaphore_download_token: ""
+

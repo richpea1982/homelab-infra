@@ -1,0 +1,13 @@
+services:
+  dozzle:
+    image: "amir20/dozzle:v9.0"
+    networks:
+      - management_net
+      - internal_net
+    volumes: []
+    domains:
+      - "dozzle.pearsalls.fr"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "pearsalls.fr"

@@ -1,0 +1,12 @@
+services:
+  bentopdf:
+    image: "bentopdf/bentopdf:latest"
+    networks:
+      - apps_net
+    volumes: []
+    domains:
+      - "bentopdf.pearsalls.fr"
+    traefik_enabled: true
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "pearsalls.fr"

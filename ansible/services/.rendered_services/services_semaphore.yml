@@ -1,0 +1,9 @@
+services:
+  semaphore:
+    version: "2.16.51"
+    domains:
+      - "semaphore.pearsalls.fr"
+    traefik_enabled: false
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "pearsalls.fr"

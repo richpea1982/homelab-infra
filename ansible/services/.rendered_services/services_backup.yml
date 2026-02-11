@@ -1,0 +1,13 @@
+services:
+  restic:
+    image: "restic/restic:latest"
+    networks:
+      - backup_net
+    volumes:
+      - restic_cache
+      - /srv/data:/data
+    traefik_enabled: false
+    domains: []
+  # future:
+  # proxmox_backup_server:
+  #   ...
