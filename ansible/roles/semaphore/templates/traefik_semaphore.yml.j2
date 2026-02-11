@@ -1,0 +1,15 @@
+http:
+  routers:
+    semaphore:
+      rule: "Host(`semaphore.pearsalls.fr`)"
+      entryPoints:
+        - websecure
+      service: semaphore
+      tls:
+        certResolver: cloudflare
+
+  services:
+    semaphore:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:3000"
