@@ -1,24 +1,28 @@
-# 1. Checkout is automatic in Semaphore run tasks, but keep explicit for clarity
-checkout
+#!/usr/bin/env bash
+set -euo pipefail
 
-# 2. Prepare SSH key from secret and permissions
+# --- repo is already checked out by Semaphore Run tasks ---
+
+# Ensure ~/.ssh exists and write the private key from the secret
 mkdir -p ~/.ssh
 echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
-# 3. Prevent host key verification prompts (safe for homelab)
-# Replace hostnames with the ones in your inventory if different
+# Add target hosts to known_hosts to avoid interactive prompt (adjust hostnames/IPs)
 ssh-keyscan -H proxmox-srv docker-srv 2>/dev/null >> ~/.ssh/known_hosts || true
 
-# 4. Optional: export vault password if you use ansible-vault
-# Uncomment if you stored VAULT_PASSWORD as a secret
-# export ANSIBLE_VAULT_PASSWORD_FILE=~/.vault_pass
-# echo "$VAULT_PASSWORD" > ~/.vault_pass
-# chmod 600 ~/.vault_pass
+# If you use Ansible Vault, write the vault password from secret and point Ansible to it
+# (attach VAULT_PASSWORD as a secret in Semaphore and name it VAULT_PASSWORD)
+if [ -n "${VAULT_PASSWORD:-}" ]; then
+  echo "$VAULT_PASSWORD" > ~/.vault_pass
+  chmod 600 ~/.vault_pass
+  VAULT_ARG="--vault-password-file ~/.vault_pass"
+else
+  VAULT_ARG=""
+fi
 
-# 5. Run ansible-playbook using inventories from the repo
-# Use -i multiple times or point to an inventory directory as needed
-ansible-playbook \
-  -i ansible/inventories/production \
-  -i ansible/inventories/lab \
-  ansible/playbooks/ping.yml
+# Choose inventory: file or directory. Use exact file path if you have hosts.yml
+INVENTORY="ansible/inventories/production/hosts.yml"
+
+# Run ansible-playbook (adjust playbook path if needed)
+ansible-playbook -i "$INVENTORY" ansible/playbooks/ping.yml $VAULT_ARG
