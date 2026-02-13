@@ -1,5 +1,5 @@
 ---
-- name: Install Semaphore CI on docker-srv
+- name: Install Automation packages on docker-srv
   hosts: docker
   become: true
   vars_files: 

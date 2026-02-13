@@ -1,0 +1,21 @@
+version: v1.0
+name: Connectivity Test
+
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2204
+
+blocks:
+  - name: Ansible Ping Test
+    task:
+      secrets:
+        - name: SSH_PRIVATE_KEY
+        - name: ENVIRONMENT
+      jobs:
+        - name: Ping All Hosts
+          commands:
+            - checkout
+            - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+            - chmod 600 ~/.ssh/id_rsa
+            - ansible-playbook -i ansible/inventories/production/hosts.yml ansible/playbooks/ping.yml --ask-vault-pass

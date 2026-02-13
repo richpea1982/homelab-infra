@@ -1,0 +1,11 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install Ansible from Debian 13 official repos
+  ansible.builtin.apt:
+    name:
+      - ansible
+      - ansible-core
+    state: present
