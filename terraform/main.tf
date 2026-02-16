@@ -30,10 +30,9 @@ resource "proxmox_virtual_environment_vm" "router" {
   disk {
     datastore_id = var.ROUTER_STORAGE
     file_format  = "qcow2"
+    interface    = "scsi0"      # ← ADD THIS
     size         = 8
   }
-
-  # NO scsihw line - bpg handles SCSI automatically
 
   network_device {
     model = "virtio"
@@ -49,8 +48,7 @@ resource "proxmox_virtual_environment_vm" "router" {
     file_id = var.ROUTER_ISO
   }
 
-  # NO cloud_init block - bpg handles differently
-  # NO start_after_create - use running = true instead
-  running = true
+  # DELETE running = true - use:
+  autostart = true              # ← ADD THIS
 }
 
