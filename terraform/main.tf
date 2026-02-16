@@ -17,50 +17,40 @@ provider "proxmox" {
 # Router VM (VyOS)
 # -------------------------
 resource "proxmox_virtual_environment_vm" "router" {
-  name      = var.ROUTER_NAME        # ← OK
-  node_name = var.ROUTER_NODE        # ← node → node_name
-  vm_id     = var.ROUTER_VMID        # ← vmid → vm_id
+  name  = var.ROUTER_NAME
+  node_name = var.ROUTER_NODE
+  vm_id = var.ROUTER_VMID
 
-  agent {
-    enabled = true                   # ← agent = 1 → agent block
-  }
+  agent { enabled = true }
 
-  cpu {
-    cores = var.ROUTER_CORES         # ← cores → cpu.cores
-  }
+  cpu { cores = var.ROUTER_CORES }
 
-  memory {
-    dedicated = var.ROUTER_MEMORY    # ← memory → memory.dedicated
-  }
+  memory { dedicated = var.ROUTER_MEMORY }
 
   disk {
     datastore_id = var.ROUTER_STORAGE
     file_format  = "qcow2"
-    interface    = "scsi0" 
     size         = 8
   }
 
-  scsihw = "virtio-scsi-single"
+  # NO scsihw line - bpg handles SCSI automatically
 
   network_device {
-    bridge_id = "vmbr0"
-    model     = "virtio"
+    model = "virtio"
+    bridge = "vmbr0"
   }
 
   network_device {
-    bridge_id = "vmbr1"
-    model     = "virtio"
+    model = "virtio"
+    bridge = "vmbr1"
   }
 
   cdrom {
-    datastore_id = "local"
-    file_id      = var.ROUTER_ISO
+    file_id = var.ROUTER_ISO
   }
 
-  cloud_init {
-    snippets = [var.ROUTER_SNIPPET]
-  }
-
-  start_after_create = true
+  # NO cloud_init block - bpg handles differently
+  # NO start_after_create - use running = true instead
+  running = true
 }
 
