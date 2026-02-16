@@ -16,7 +16,7 @@ provider "proxmox" {
 # -------------------------
 # Router VM (VyOS)
 # -------------------------
-resource "proxmox_vm_qemu" "router" {
+resource "proxmox_virtual_environment_vm" "router" {
   name        = var.ROUTER_NAME
   vmid        = var.ROUTER_VMID
   node        = var.ROUTER_NODE
