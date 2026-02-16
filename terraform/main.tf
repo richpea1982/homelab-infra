@@ -30,7 +30,7 @@ resource "proxmox_virtual_environment_vm" "router" {
   disk {
     datastore_id = var.ROUTER_STORAGE
     file_format  = "qcow2"
-    interface    = "scsi0"      # ← ADD THIS
+    interface    = "scsi0"
     size         = 8
   }
 
@@ -47,8 +47,5 @@ resource "proxmox_virtual_environment_vm" "router" {
   cdrom {
     file_id = var.ROUTER_ISO
   }
-
-  # DELETE running = true - use:
-  autostart = true              # ← ADD THIS
 }
 
