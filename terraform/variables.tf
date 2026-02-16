@@ -16,11 +16,6 @@ variable "PM_API_PASSWORD" {
   sensitive = true
 }
 
-variable "VAULTWARDEN_ROOT_PASSWORD" {
-  type      = string
-  sensitive = true
-}
-
 # -------------------------
 # Router VM variables
 # -------------------------
