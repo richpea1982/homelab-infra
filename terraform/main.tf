@@ -44,6 +44,10 @@ resource "proxmox_virtual_environment_vm" "router" {
     bridge = "vmbr1"
   }
 
+  boot {
+    order = ["scsi0", "ide3"]
+  }
+
   cdrom {
     file_id = var.ROUTER_ISO
     interface = "ide3"
