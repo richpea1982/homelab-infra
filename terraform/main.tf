@@ -45,7 +45,6 @@ resource "proxmox_virtual_environment_vm" "router" {
   }
 
   cdrom {
-    enabled = true
     file_id = var.ROUTER_ISO
     interface = "ide3"
   }
