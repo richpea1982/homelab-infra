@@ -1,0 +1,14 @@
+- hosts: proxmox-srv
+  become: yes
+  tasks:
+    - name: Ensure snippets dir exists
+      file:
+        path: /var/lib/vz/snippets
+        state: directory
+        mode: "0755"
+
+    - name: Deploy VyOS cloud-init snippet
+      copy:
+        src: templates/router/vyos-user-data.yaml
+        dest: /var/lib/vz/snippets/vyos-user-data.yaml
+        mode: "0644"

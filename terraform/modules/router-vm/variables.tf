@@ -1,0 +1,11 @@
+variable "proxmox_node"      { type = string }
+variable "router_name"       { type = string }
+variable "router_cores"      { type = number }
+variable "router_memory"     { type = number }
+variable "router_storage"    { type = string }
+variable "wan_bridge"        { type = string }
+variable "lan_bridge"        { type = string }
+variable "iso_storage"       { type = string }
+variable "snippet_storage"   { type = string }
+variable "router_iso"        { type = string }
+variable "vyos_user_data"    { type = string }

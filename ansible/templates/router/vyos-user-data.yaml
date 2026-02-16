@@ -1,0 +1,17 @@
+#cloud-config
+vyos_config_commands:
+  - set interfaces ethernet eth0 address dhcp
+
+  - set interfaces ethernet eth1 vif 10 address 10.10.0.1/24
+  - set interfaces ethernet eth1 vif 20 address 10.20.0.1/24
+  - set interfaces ethernet eth1 vif 30 address 10.30.0.1/24
+  - set interfaces ethernet eth1 vif 40 address 10.40.0.1/24
+  - set interfaces ethernet eth1 vif 50 address 10.50.0.1/24
+  - set interfaces ethernet eth1 vif 99 address 10.99.0.1/24
+
+  - set nat source rule 100 outbound-interface eth0
+  - set nat source rule 100 source address 10.0.0.0/8
+  - set nat source rule 100 translation address masquerade
+
+  - commit
+  - save
