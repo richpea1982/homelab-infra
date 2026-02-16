@@ -17,42 +17,50 @@ provider "proxmox" {
 # Router VM (VyOS)
 # -------------------------
 resource "proxmox_virtual_environment_vm" "router" {
-  name        = var.ROUTER_NAME
-  vmid        = var.ROUTER_VMID
-  node        = var.ROUTER_NODE
-  onboot      = true
-  agent       = 1
+  name      = var.ROUTER_NAME        # ← OK
+  node_name = var.ROUTER_NODE        # ← node → node_name
+  vm_id     = var.ROUTER_VMID        # ← vmid → vm_id
 
-  cores       = var.ROUTER_CORES
-  memory      = var.ROUTER_MEMORY
+  agent {
+    enabled = true                   # ← agent = 1 → agent block
+  }
 
-  scsihw      = "virtio-scsi-pci"
+  cpu {
+    cores = var.ROUTER_CORES         # ← cores → cpu.cores
+  }
+
+  memory {
+    dedicated = var.ROUTER_MEMORY    # ← memory → memory.dedicated
+  }
 
   disk {
-    slot    = 0
-    size    = "8G"
-    type    = "scsi"
-    storage = var.ROUTER_STORAGE
+    datastore_id = var.ROUTER_STORAGE
+    file_format  = "qcow2"
+    interface    = "scsi0" 
+    size         = 8
   }
 
-  # WAN NIC (home LAN)
-  network {
-    model  = "virtio"
-    bridge = "vmbr0"
+  scsihw = "virtio-scsi-single"
+
+  network_device {
+    bridge_id = "vmbr0"
+    model     = "virtio"
   }
 
-  # LAN trunk NIC (VLANs)
-  network {
-    model  = "virtio"
-    bridge = "vmbr1"
+  network_device {
+    bridge_id = "vmbr1"
+    model     = "virtio"
   }
 
-  # Boot from VyOS ISO
-  cdrom = "local:iso/${var.ROUTER_ISO}"
+  cdrom {
+    datastore_id = "local"
+    file_id      = var.ROUTER_ISO
+  }
 
-  # Cloud-init snippet
-  cicustom = "user=local:snippets/${var.ROUTER_SNIPPET}"
+  cloud_init {
+    snippets = [var.ROUTER_SNIPPET]
+  }
 
-  os_type = "cloud-init"
+  start_after_create = true
 }
 
