@@ -1,5 +1,17 @@
 terraform {
   required_version = ">= 1.6.0"
+
+  backend "s3" {
+    bucket                      = "terraform-state"
+    key                         = "homelab/router/terraform.tfstate"
+    region                      = "us-east-1"
+    endpoint                    = "http://docker-srv:9000"
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
+    skip_region_validation      = true
+    force_path_style            = true
+  }
+
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
@@ -53,12 +65,11 @@ resource "proxmox_virtual_environment_vm" "router" {
     mac_address = "BC:24:11:DB:87:71"
   }
 
-  # To rebuild: set enabled = true and add "ide2" back to boot_order, then apply
+  # To rebuild: set file_id back to var.ROUTER_ISO and add "ide2" to boot_order
   boot_order = ["scsi0"]
 
   cdrom {
-    enabled   = false
-    file_id   = var.ROUTER_ISO # images:iso/vyos-2025.11-generic-amd64.iso
+    file_id   = "none"
     interface = "ide2"
   }
 
