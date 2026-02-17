@@ -32,7 +32,7 @@ variable "ROUTER_NAME" {
 
 variable "ROUTER_VMID" {
   type    = number
-  default = 200
+  default = 101
 }
 
 variable "ROUTER_ISO" {

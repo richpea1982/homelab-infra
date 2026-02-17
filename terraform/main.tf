@@ -17,21 +17,14 @@ provider "proxmox" {
 # Router VM (VyOS)
 # -------------------------
 resource "proxmox_virtual_environment_vm" "router" {
-  name     = var.ROUTER_NAME
+  name      = var.ROUTER_NAME
   node_name = var.ROUTER_NODE
-  vm_id    = var.ROUTER_VMID
+  vm_id     = var.ROUTER_VMID
+  started   = true
 
-  agent {
-    enabled = true
-  }
-
-  cpu {
-    cores = var.ROUTER_CORES
-  }
-
-  memory {
-    dedicated = var.ROUTER_MEMORY
-  }
+  agent { enabled = true }
+  cpu { cores = var.ROUTER_CORES }
+  memory { dedicated = var.ROUTER_MEMORY }
 
   disk {
     datastore_id = var.ROUTER_STORAGE
@@ -40,22 +33,21 @@ resource "proxmox_virtual_environment_vm" "router" {
     size         = 8
   }
 
+  # WAN: ISP router (192.168.1.1) via VLAN10
   network_device {
-    model  = "virtio"
-    bridge = "vmbr0"
+    model   = "virtio"
+    bridge  = "vmbr0"
+    vlan_id = 10
   }
 
+  # LAN: Homelab native 10.10.0.1/24 (no VLAN tag)
   network_device {
     model  = "virtio"
     bridge = "vmbr1"
+    # NO vlan_id = native VLAN10 on trunk
   }
 
-  # Boot order (CDROM first)
-  boot_order = ["ide3", "scsi0"]
-
-  cdrom {
-    file_id   = var.ROUTER_ISO
-    interface = "ide3"
-  }
+  boot_order = ["scsi0"]
+  initialize_per_boot = false
 }
 
