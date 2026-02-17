@@ -52,7 +52,7 @@ variable "ROUTER_CORES" {
 
 variable "ROUTER_STORAGE" {
   type    = string
-  default = "local-lvm"
+  default = "local"
 }
 
 variable "ROUTER_SNIPPET" {
