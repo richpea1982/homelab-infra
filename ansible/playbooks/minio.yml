@@ -1,6 +1,7 @@
 ---
 - name: Deploy MinIO
   hosts: docker
+  become: true
   vars_files:
     - ../group_vars/all/vault.yml
     - ../group_vars/all/services.yml
