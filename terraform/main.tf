@@ -51,7 +51,7 @@ resource "proxmox_virtual_environment_vm" "router" {
   }
 
   # Boot order (CDROM first)
-  boot_order = ["cdrom", "scsi0"]
+  boot_order = ["ide3", "scsi0"]
 
   cdrom {
     file_id   = var.ROUTER_ISO
