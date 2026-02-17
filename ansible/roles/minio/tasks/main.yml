@@ -1,0 +1,27 @@
+---
+# ----------------------------------------
+# MINIO DIRECTORIES
+# ----------------------------------------
+- name: Create MinIO base directory
+  ansible.builtin.file:
+    path: /opt/minio
+    state: directory
+    mode: '0755'
+
+# ----------------------------------------
+# DOCKER COMPOSE
+# ----------------------------------------
+- name: Deploy MinIO docker-compose.yml
+  ansible.builtin.template:
+    src: docker-compose.yml.j2
+    dest: /opt/minio/docker-compose.yml
+    mode: '0644'
+  notify: restart minio
+
+# ----------------------------------------
+# START STACK
+# ----------------------------------------
+- name: Start MinIO stack
+  community.docker.docker_compose_v2:
+    project_src: /opt/minio
+    state: present

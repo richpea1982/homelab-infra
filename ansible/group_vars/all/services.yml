@@ -277,3 +277,12 @@ services:
     traefik_enabled: false
     cloudflared_enabled: false
     cloudflared_origin_verify: false
+
+  minio:
+    image: "minio/minio:latest"
+    volumes:
+      - minio_data
+    domains: []
+    networks: []
+    traefik_enabled: false
+    cloudflared_enabled: false

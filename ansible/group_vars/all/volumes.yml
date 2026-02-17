@@ -24,4 +24,4 @@ docker_volumes:
   esperance_db: {}
   esperance_nginx_conf: {}
   terraform_data: {}
-
+  minio_data: {}
