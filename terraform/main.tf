@@ -16,12 +16,6 @@ provider "proxmox" {
 # -------------------------
 # Router VM (VyOS)
 # -------------------------
-provider "proxmox" {
-  endpoint  = var.PM_API_URL
-  api_token = "${var.PM_API_TOKEN_ID}=${var.PM_API_TOKEN_SECRET}"
-  insecure  = true
-}
-
 resource "proxmox_virtual_environment_vm" "router" {
   name      = var.ROUTER_NAME
   node_name = var.ROUTER_NODE
