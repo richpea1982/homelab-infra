@@ -44,8 +44,8 @@ resource "proxmox_virtual_environment_vm" "router" {
     bridge = "vmbr1"
   }
 
-  boot {
-    order = ["scsi0", "ide3"]
+   # Boot order (CDROM first)
+  boot_order = ["cdrom", "scsi0"]
   }
 
   cdrom {
