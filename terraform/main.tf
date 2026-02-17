@@ -16,6 +16,12 @@ provider "proxmox" {
 # -------------------------
 # Router VM (VyOS)
 # -------------------------
+provider "proxmox" {
+  endpoint  = var.PM_API_URL
+  api_token = "${var.PM_API_TOKEN_ID}=${var.PM_API_TOKEN_SECRET}"
+  insecure  = true
+}
+
 resource "proxmox_virtual_environment_vm" "router" {
   name      = var.ROUTER_NAME
   node_name = var.ROUTER_NODE
@@ -33,18 +39,25 @@ resource "proxmox_virtual_environment_vm" "router" {
     size         = 8
   }
 
-  # WAN: ISP router (192.168.1.1) via VLAN10 on vmbr0
+  # WAN: ISP router via VLAN10
   network_device {
     model   = "virtio"
     bridge  = "vmbr0"
     vlan_id = 10
   }
 
-  # LAN: Homelab 10.10.0.1/24 (native VLAN on vmbr1 trunk)
+  # LAN: Homelab trunk (native VLAN10)
   network_device {
     model  = "virtio"
     bridge = "vmbr1"
   }
 
-  boot_order = ["scsi0"]
+  # Boot from CDROM first (installer), then disk
+  boot_order = ["ide2", "scsi0"]
+
+  # ATTACH ISO - This is what you wanted
+  cdrom {
+    file_id   = var.ROUTER_ISO  # images:iso/vyos-2025.11-generic-amd64.iso
+    interface = "ide2"
+  }
 }
