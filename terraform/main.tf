@@ -33,21 +33,18 @@ resource "proxmox_virtual_environment_vm" "router" {
     size         = 8
   }
 
-  # WAN: ISP router (192.168.1.1) via VLAN10
+  # WAN: ISP router (192.168.1.1) via VLAN10 on vmbr0
   network_device {
     model   = "virtio"
     bridge  = "vmbr0"
     vlan_id = 10
   }
 
-  # LAN: Homelab native 10.10.0.1/24 (no VLAN tag)
+  # LAN: Homelab 10.10.0.1/24 (native VLAN on vmbr1 trunk)
   network_device {
     model  = "virtio"
     bridge = "vmbr1"
-    # NO vlan_id = native VLAN10 on trunk
   }
 
   boot_order = ["scsi0"]
-  initialize_per_boot = false
 }
-
