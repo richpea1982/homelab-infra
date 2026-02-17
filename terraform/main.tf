@@ -23,7 +23,8 @@ resource "proxmox_virtual_environment_vm" "router" {
   vm_id     = var.ROUTER_VMID
   started   = true
 
-  agent { enabled = true }
+  # VyOS does not ship with qemu-guest-agent
+  agent { enabled = false }
 
   cpu { cores = var.ROUTER_CORES }
 
@@ -52,19 +53,15 @@ resource "proxmox_virtual_environment_vm" "router" {
     mac_address = "BC:24:11:DB:87:71"
   }
 
-  # Boot from ISO first, then disk
-  # After VyOS is installed: set enabled = false and re-apply
-  boot_order = ["ide2", "scsi0"]
+  # To rebuild: set enabled = true and add "ide2" back to boot_order, then apply
+  boot_order = ["scsi0"]
 
   cdrom {
-    enabled   = true
-    file_id   = var.ROUTER_ISO # e.g. images:iso/vyos-2025.11-generic-amd64.iso
+    enabled   = false
+    file_id   = var.ROUTER_ISO # images:iso/vyos-2025.11-generic-amd64.iso
     interface = "ide2"
   }
 
-  # Prevents Terraform from destroying/recreating the VM
-  # after VyOS installs and changes internal state (boot order,
-  # agent fingerprint, etc.)
   lifecycle {
     ignore_changes = [
       cdrom,
