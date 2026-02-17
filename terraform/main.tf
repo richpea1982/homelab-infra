@@ -70,11 +70,20 @@ resource "proxmox_virtual_environment_vm" "router" {
     mac_address = "BC:24:11:DB:87:71"
   }
 
-  # To rebuild: set file_id back to var.ROUTER_ISO and add "ide2" to boot_order
-  boot_order = ["scsi0"]
+  # -------------------------
+  # BOOT / CDROM
+  # -------------------------
+  # NORMAL OPERATION — boot from disk only
+ # boot_order = ["scsi0"]
+ # cdrom {
+ #   file_id   = "none"
+ #   interface = "ide2"
+ # }
 
+  # REBUILD MODE — uncomment below and comment out the two lines above
+  boot_order = ["ide2", "scsi0"]
   cdrom {
-    file_id   = "none"
+    file_id   = var.ROUTER_ISO  # images:iso/vyos-2025.11-generic-amd64.iso
     interface = "ide2"
   }
 
