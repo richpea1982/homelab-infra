@@ -9,3 +9,9 @@
       - ansible
       - ansible-core
     state: present
+
+- name: Install vyos.vyos ansible collection
+  community.general.ansible_galaxy_install:
+    type: collection
+    name: vyos.vyos
+  when: inventory_hostname == 'docker-srv'

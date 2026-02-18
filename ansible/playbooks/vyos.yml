@@ -1,0 +1,8 @@
+---
+- name: Configure VyOS router
+  hosts: router
+  gather_facts: false
+  vars_files:
+    - ../group_vars/all/vault.yml
+  roles:
+    - vyos-router

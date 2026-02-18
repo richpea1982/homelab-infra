@@ -1,0 +1,43 @@
+---
+# ----------------------------------------
+# NAT / MASQUERADE
+# ----------------------------------------
+- name: Configure NAT masquerade for all VLANs
+  vyos.vyos.vyos_config:
+    lines:
+      - set nat source rule 100 outbound-interface name eth0
+      - set nat source rule 100 source address 10.0.0.0/8
+      - set nat source rule 100 translation address masquerade
+      - set nat source rule 100 description 'Masquerade all VLAN traffic to WAN'
+    save: true
+
+# ----------------------------------------
+# VLAN SUB-INTERFACES
+# ----------------------------------------
+- name: Configure VLAN10 - Management (10.10.0.0/24)
+  vyos.vyos.vyos_config:
+    lines:
+      - set interfaces ethernet eth1 vif 10 address 10.10.0.1/24
+      - set interfaces ethernet eth1 vif 10 description Management
+    save: true
+
+- name: Configure VLAN20 - WordPress (10.20.0.0/24)
+  vyos.vyos.vyos_config:
+    lines:
+      - set interfaces ethernet eth1 vif 20 address 10.20.0.1/24
+      - set interfaces ethernet eth1 vif 20 description WordPress
+    save: true
+
+- name: Configure VLAN30 - Apps (10.30.0.0/24)
+  vyos.vyos.vyos_config:
+    lines:
+      - set interfaces ethernet eth1 vif 30 address 10.30.0.1/24
+      - set interfaces ethernet eth1 vif 30 description Apps
+    save: true
+
+- name: Configure VLAN40 - Vaultwarden (10.40.0.0/24)
+  vyos.vyos.vyos_config:
+    lines:
+      - set interfaces ethernet eth1 vif 40 address 10.40.0.1/24
+      - set interfaces ethernet eth1 vif 40 description Vaultwarden
+    save: true
