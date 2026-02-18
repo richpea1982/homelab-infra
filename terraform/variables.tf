@@ -11,10 +11,10 @@ variable "PM_API_TOKEN_SECRET" {
   sensitive = true
 }
 
-variable "PM_API_PASSWORD" {
-  type      = string
-  sensitive = true
-}
+#variable "PM_API_PASSWORD" {
+#  type      = string
+#  sensitive = true
+#}
 
 # -------------------------
 # Router VM variables
