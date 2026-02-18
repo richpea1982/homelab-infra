@@ -87,11 +87,11 @@ resource "proxmox_virtual_environment_vm" "router" {
 #    interface = "ide2"
 #  }
 
-  lifecycle {
-    ignore_changes = [
-      cdrom,
-      boot_order,
-      agent,
-    ]
-  }
-}
+#  lifecycle {
+#    ignore_changes = [
+#      cdrom,
+#      boot_order,
+#      agent,
+#    ]
+#  }
+#}
