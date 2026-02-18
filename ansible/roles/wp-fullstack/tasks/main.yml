@@ -36,33 +36,38 @@
     name: mariadb
     state: started
     enabled: true
-  become: true
 
-- name: Set MariaDB root password
+- name: Set MariaDB root password (first run via socket)
   community.mysql.mysql_user:
     name: root
     password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
-    check_implicit_admin: yes
     state: present
-  become: true
+  ignore_errors: true
+
+- name: Set MariaDB root password (subsequent runs via password)
+  community.mysql.mysql_user:
+    name: root
+    password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
+    login_user: root
+    login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
+    state: present
+  ignore_errors: true
 
 - name: Remove anonymous MariaDB users
   community.mysql.mysql_user:
     name: ''
     host_all: true
     state: absent
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    check_implicit_admin: yes
-  become: true
+    login_user: root
+    login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
 
 - name: Remove MariaDB test database
   community.mysql.mysql_db:
     name: test
     state: absent
-    login_unix_socket: /var/run/mysqld/mysqld.sock
-    check_implicit_admin: yes
-  become: true
+    login_user: root
+    login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
 
 # ----------------------------------------
 # MARIADB - WORDPRESS DATABASE
@@ -73,7 +78,6 @@
     state: present
     login_user: root
     login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
-  become: true
 
 - name: Create WordPress database user
   community.mysql.mysql_user:
@@ -83,7 +87,6 @@
     state: present
     login_user: root
     login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
-  become: true
 
 # ----------------------------------------
 # WORDPRESS
