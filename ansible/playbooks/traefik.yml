@@ -9,7 +9,7 @@
     - ../group_vars/all/networks.yml
     - ../group_vars/all/volumes.yml
     - ../group_vars/all/domains.yml
-    - ../group_vars/all/wp-sevices.yml
+    - ../group_vars/all/wp-services.yml
 
   roles:
     - common
