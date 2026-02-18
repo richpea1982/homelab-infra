@@ -9,9 +9,15 @@ define( 'DB_COLLATE',  '' );
 {{ wp_salts[inventory_hostname] }}
 
 $table_prefix = 'wp_';
+
 define( 'WP_DEBUG', false );
 define( 'WP_HOME',    'https://{{ site.domain }}' );
 define( 'WP_SITEURL', 'https://{{ site.domain }}' );
+
+# Trust reverse proxy headers from Traefik/Cloudflare
+if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+    $_SERVER['HTTPS'] = 'on';
+}
 
 if ( ! defined( 'ABSPATH' ) ) {
     define( 'ABSPATH', __DIR__ . '/' );
