@@ -42,6 +42,7 @@
     name: root
     password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
+    check_implicit_admin: yes
     state: present
 
 - name: Remove anonymous MariaDB users
