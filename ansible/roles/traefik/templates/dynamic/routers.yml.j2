@@ -8,3 +8,22 @@ http:
       tls: {}
       middlewares:
         - security-chain
+
+{% for name, site in wordpress_sites.items() %}
+    wp-{{ name }}:
+      rule: "Host(`{{ site.domain }}`)"
+      entryPoints:
+        - websecure
+      service: wp-{{ name }}
+      tls: {}
+
+{% endfor %}
+
+  services:
+{% for name, site in wordpress_sites.items() %}
+    wp-{{ name }}:
+      loadBalancer:
+        servers:
+          - url: "http://{{ site.ip }}"
+
+{% endfor %}

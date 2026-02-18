@@ -1,10 +1,8 @@
 tunnel: {{ cloudflare_tunnel_id }}
 credentials-file: /etc/cloudflared/{{ cloudflare_tunnel_id }}.json
-
 ingress:
 {% for name, svc in services.items() %}
 {%   if svc.cloudflared_enabled | default(false) %}
-
 {%     if svc.domains is defined %}
 {%       for domain in svc.domains %}
   - hostname: "{{ domain }}"
@@ -13,7 +11,6 @@ ingress:
       noTLSVerify: {{ svc.cloudflared_origin_verify | default(false) | lower }}
 {%       endfor %}
 {%     endif %}
-
 {%     if svc.nginx is defined and svc.nginx.domains is defined %}
 {%       for domain in svc.nginx.domains %}
   - hostname: "{{ domain }}"
@@ -22,10 +19,14 @@ ingress:
       noTLSVerify: {{ svc.cloudflared_origin_verify | default(false) | lower }}
 {%       endfor %}
 {%     endif %}
-
 {%   endif %}
 {% endfor %}
-
+{% for name, site in wordpress_sites.items() %}
+  - hostname: "{{ site.domain }}"
+    service: https://traefik:443
+    originRequest:
+      noTLSVerify: true
+{% endfor %}
   - hostname: "egliseesperanceagde.fr"
     service: https://traefik:443
     originRequest:
@@ -34,7 +35,4 @@ ingress:
     service: https://traefik:443
     originRequest:
       noTLSVerify: true
-
-
-
   - service: http_status:404
