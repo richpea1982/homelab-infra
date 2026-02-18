@@ -74,18 +74,18 @@ resource "proxmox_virtual_environment_vm" "router" {
   # BOOT / CDROM
   # -------------------------
   # NORMAL OPERATION — boot from disk only
- # boot_order = ["scsi0"]
- # cdrom {
- #   file_id   = "none"
- #   interface = "ide2"
- # }
+ boot_order = ["scsi0"]
+ cdrom {
+   file_id   = "none"
+   interface = "ide2"
+ }
 
   # REBUILD MODE — uncomment below and comment out the two lines above
-  boot_order = ["ide2", "scsi0"]
-  cdrom {
-    file_id   = var.ROUTER_ISO  # images:iso/vyos-2025.11-generic-amd64.iso
-    interface = "ide2"
-  }
+#  boot_order = ["ide2", "scsi0"]
+#  cdrom {
+#    file_id   = var.ROUTER_ISO  # images:iso/vyos-2025.11-generic-amd64.iso
+#    interface = "ide2"
+#  }
 
   lifecycle {
     ignore_changes = [
