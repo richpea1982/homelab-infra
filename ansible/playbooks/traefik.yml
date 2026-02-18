@@ -13,5 +13,5 @@
 
   roles:
     - common
-    - clouflared
+    - cloudflared
     - traefik
