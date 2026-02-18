@@ -49,13 +49,15 @@
     name: ''
     host_all: true
     state: absent
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_user: root
+    login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
 
 - name: Remove MariaDB test database
   community.mysql.mysql_db:
     name: test
     state: absent
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_user: root
+    login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
 
 # ----------------------------------------
 # MARIADB - WORDPRESS DATABASE
@@ -64,7 +66,8 @@
   community.mysql.mysql_db:
     name: "{{ site.db_name }}"
     state: present
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_user: root
+    login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
 
 - name: Create WordPress database user
   community.mysql.mysql_user:
@@ -72,7 +75,8 @@
     password: "{{ site.db_password }}"
     priv: "{{ site.db_name }}.*:ALL"
     state: present
-    login_unix_socket: /var/run/mysqld/mysqld.sock
+    login_user: root
+    login_password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
 
 # ----------------------------------------
 # WORDPRESS
