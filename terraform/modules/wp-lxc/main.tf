@@ -12,6 +12,7 @@ resource "proxmox_virtual_environment_container" "wp_lxc" {
   vm_id       = var.vmid
   description = "WordPress LXC - ${var.hostname}"
   started     = true
+  unprivileged = true
 
   initialization {
     hostname = var.hostname
