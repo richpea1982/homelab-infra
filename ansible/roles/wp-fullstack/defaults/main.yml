@@ -1,0 +1,3 @@
+---
+wp_install_dir: /var/www
+wp_nginx_user: www-data

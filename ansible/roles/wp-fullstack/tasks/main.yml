@@ -1,0 +1,152 @@
+---
+# ----------------------------------------
+# SITE VARS
+# ----------------------------------------
+- name: Set site variables
+  ansible.builtin.set_fact:
+    site: "{{ wordpress_sites[inventory_hostname] }}"
+
+# ----------------------------------------
+# PACKAGES
+# ----------------------------------------
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - nginx
+      - "php{{ wp_php_version }}-fpm"
+      - "php{{ wp_php_version }}-mysql"
+      - "php{{ wp_php_version }}-xml"
+      - "php{{ wp_php_version }}-curl"
+      - "php{{ wp_php_version }}-gd"
+      - "php{{ wp_php_version }}-mbstring"
+      - "php{{ wp_php_version }}-zip"
+      - "php{{ wp_php_version }}-intl"
+      - mariadb-server
+      - python3-pymysql
+      - curl
+      - unzip
+    state: present
+    update_cache: true
+
+# ----------------------------------------
+# MARIADB - ROOT SETUP
+# ----------------------------------------
+- name: Ensure MariaDB is started
+  ansible.builtin.service:
+    name: mariadb
+    state: started
+    enabled: true
+
+- name: Set MariaDB root password
+  community.mysql.mysql_user:
+    name: root
+    password: "{{ wp_mariadb_root_passwords[inventory_hostname] }}"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    state: present
+
+- name: Remove anonymous MariaDB users
+  community.mysql.mysql_user:
+    name: ''
+    host_all: true
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Remove MariaDB test database
+  community.mysql.mysql_db:
+    name: test
+    state: absent
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+# ----------------------------------------
+# MARIADB - WORDPRESS DATABASE
+# ----------------------------------------
+- name: Create WordPress database
+  community.mysql.mysql_db:
+    name: "{{ site.db_name }}"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+- name: Create WordPress database user
+  community.mysql.mysql_user:
+    name: "{{ site.db_user }}"
+    password: "{{ site.db_password }}"
+    priv: "{{ site.db_name }}.*:ALL"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+# ----------------------------------------
+# WORDPRESS
+# ----------------------------------------
+- name: Create web root directory
+  ansible.builtin.file:
+    path: "{{ wp_install_dir }}/{{ inventory_hostname }}"
+    state: directory
+    owner: "{{ wp_nginx_user }}"
+    group: "{{ wp_nginx_user }}"
+    mode: '0755'
+
+- name: Download WordPress
+  ansible.builtin.get_url:
+    url: "https://wordpress.org/wordpress-{{ wp_version }}.tar.gz"
+    dest: /tmp/wordpress.tar.gz
+    mode: '0644'
+
+- name: Extract WordPress
+  ansible.builtin.unarchive:
+    src: /tmp/wordpress.tar.gz
+    dest: /tmp
+    remote_src: true
+
+- name: Copy WordPress files to web root
+  ansible.builtin.copy:
+    src: /tmp/wordpress/
+    dest: "{{ wp_install_dir }}/{{ inventory_hostname }}/"
+    owner: "{{ wp_nginx_user }}"
+    group: "{{ wp_nginx_user }}"
+    remote_src: true
+
+- name: Deploy wp-config.php
+  ansible.builtin.template:
+    src: wp-config.php.j2
+    dest: "{{ wp_install_dir }}/{{ inventory_hostname }}/wp-config.php"
+    owner: "{{ wp_nginx_user }}"
+    group: "{{ wp_nginx_user }}"
+    mode: '0640'
+
+# ----------------------------------------
+# NGINX
+# ----------------------------------------
+- name: Deploy nginx site config
+  ansible.builtin.template:
+    src: nginx-site.conf.j2
+    dest: "/etc/nginx/sites-available/{{ inventory_hostname }}"
+    mode: '0644'
+  notify: restart nginx
+
+- name: Enable nginx site
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/{{ inventory_hostname }}"
+    dest: "/etc/nginx/sites-enabled/{{ inventory_hostname }}"
+    state: link
+  notify: restart nginx
+
+- name: Remove default nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+# ----------------------------------------
+# SERVICES
+# ----------------------------------------
+- name: Ensure PHP-FPM is started
+  ansible.builtin.service:
+    name: "php{{ wp_php_version }}-fpm"
+    state: started
+    enabled: true
+
+- name: Ensure nginx is started
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

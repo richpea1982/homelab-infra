@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    server_name {{ site.domain }};
+    root {{ wp_install_dir }}/{{ inventory_hostname }};
+    index index.php index.html;
+
+    access_log /var/log/nginx/{{ inventory_hostname }}-access.log;
+    error_log  /var/log/nginx/{{ inventory_hostname }}-error.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php{{ wp_php_version }}-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}

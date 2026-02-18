@@ -1,0 +1,10 @@
+---
+- name: Deploy WordPress sites
+  hosts: wordpress
+  become: true
+  vars_files:
+    - ../group_vars/all/wp-vault.yml
+    - ../group_vars/all/wp-services.yml
+    - ../group_vars/all/domains.yml
+  roles:
+    - wp-fullstack

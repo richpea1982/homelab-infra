@@ -1,0 +1,20 @@
+<?php
+define( 'DB_NAME',     '{{ site.db_name }}' );
+define( 'DB_USER',     '{{ site.db_user }}' );
+define( 'DB_PASSWORD', '{{ site.db_password }}' );
+define( 'DB_HOST',     'localhost' );
+define( 'DB_CHARSET',  'utf8mb4' );
+define( 'DB_COLLATE',  '' );
+
+{{ wp_salts }}
+
+$table_prefix = 'wp_';
+
+define( 'WP_DEBUG', false );
+define( 'WP_HOME',  'https://{{ site.domain }}' );
+define( 'WP_SITEURL', 'https://{{ site.domain }}' );
+
+if ( ! defined( 'ABSPATH' ) ) {
+    define( 'ABSPATH', __DIR__ . '/' );
+}
+require_once ABSPATH . 'wp-settings.php';
