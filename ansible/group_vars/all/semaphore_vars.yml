@@ -29,3 +29,4 @@ semaphore_start_immediately: true
 # Optional override token for private or rate-limited downloads (leave empty if unused)
 semaphore_download_token: ""
 
+lxc_ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPHiVusJOdIQH9Tbb79QWz7n52G+8flJxOyIJfVCF3Ya semaphore@docker-srv"

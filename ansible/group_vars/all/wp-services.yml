@@ -1,0 +1,19 @@
+wp_php_version: "8.4"
+wp_version: "6.8"
+
+wordpress_sites:
+  richweb:
+    domain: "{{ richweb_domain }}"
+    db_name: richweb
+    db_user: richweb
+    ip: "10.20.0.10"
+  petitsanglais:
+    domain: "{{ petitsanglais_domain }}"
+    db_name: petitsanglais
+    db_user: petitsanglais
+    ip: "10.20.0.11"
+  esperance:
+    domain: "{{ esperanceorg_domain }}"
+    db_name: esperance
+    db_user: esperance
+    ip: "10.20.0.12"

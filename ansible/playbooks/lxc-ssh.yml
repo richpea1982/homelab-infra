@@ -1,0 +1,8 @@
+---
+- name: Bootstrap WordPress LXC SSH access
+  hosts: wordpress
+  gather_facts: false
+  vars_files:
+    - ../group_vars/all/semaphore_vars.yml 
+  roles:
+    - lxc-ssh

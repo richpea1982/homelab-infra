@@ -1,0 +1,5 @@
+- name: Copy Semaphore SSH key to WordPress LXCs
+  ansible.posix.authorized_key:
+    user: root
+    state: present
+    key: "{{ lxc_ssh_key }}"
