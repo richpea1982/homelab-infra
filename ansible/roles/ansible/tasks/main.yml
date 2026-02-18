@@ -8,6 +8,8 @@
     name:
       - ansible
       - ansible-core
+      - libssh-dev
+      - python3-dev
     state: present
 
 - name: Install vyos.vyos ansible collection
@@ -15,3 +17,12 @@
     type: collection
     name: vyos.vyos
   when: inventory_hostname == 'docker-srv'
+
+# ----------------------------------------
+# PIP PACKAGES
+# ----------------------------------------
+- name: Install pip packages
+  ansible.builtin.pip:
+    name: "{{ pip_packages }}"
+    extra_args: "--break-system-packages"
+  when: pip_packages is defined

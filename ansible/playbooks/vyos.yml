@@ -1,6 +1,6 @@
 ---
 - name: Configure VyOS router
-  hosts: router
+  hosts: vyos-router
   gather_facts: false
   connection: network_cli
   vars:
