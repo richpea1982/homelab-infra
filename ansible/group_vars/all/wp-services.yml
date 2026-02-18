@@ -8,21 +8,25 @@ wordpress_sites:
     db_user: richweb
     db_password: "{{ wp_db_passwords.richweb }}"
     ip: "10.20.0.10"
+    cloudflared_enabled: true
   petitsanglais:
     domain: "{{ petitsanglais_domain }}"
     db_name: petitsanglais
     db_user: petitsanglais
     db_password: "{{ wp_db_passwords.petitsanglais }}"
     ip: "10.20.0.11"
+    cloudflared_enabled: true
   esperance:
     domain: "{{ esperanceorg_domain }}"
     db_name: esperance
     db_user: esperance
     db_password: "{{ wp_db_passwords.esperance }}"
     ip: "10.20.0.12"
-  hantawe:
+    cloudflared_enabled: true
+  hantaweb:
     domain: "{{ hantaweb_domain }}"
     db_name: hantaweb
     db_user: hantaweb
     db_password: "{{ wp_db_passwords.hantaweb }}"
     ip: "10.20.0.13"
+    cloudflared_enabled: false
