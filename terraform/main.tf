@@ -3,13 +3,11 @@ terraform {
 
   backend "s3" {
     bucket   = "terraform-state"
-    key      = "homelab/router/terraform.tfstate"
+    key      = "homelab/terraform.tfstate"
     region   = "us-east-1"
-
     endpoints = {
       s3 = "http://docker-srv:9000"
     }
-
     skip_credentials_validation = true
     skip_metadata_api_check     = true
     skip_region_validation      = true
@@ -74,24 +72,48 @@ resource "proxmox_virtual_environment_vm" "router" {
   # BOOT / CDROM
   # -------------------------
   # NORMAL OPERATION — boot from disk only
- boot_order = ["scsi0"]
- cdrom {
-   file_id   = "none"
-   interface = "ide2"
- }
+  boot_order = ["scsi0"]
+  cdrom {
+    file_id   = "none"
+    interface = "ide2"
+  }
 
   # REBUILD MODE — uncomment below and comment out the two lines above
-#  boot_order = ["ide2", "scsi0"]
-#  cdrom {
-#    file_id   = var.ROUTER_ISO  # images:iso/vyos-2025.11-generic-amd64.iso
-#    interface = "ide2"
-#  }
+  # boot_order = ["ide2", "scsi0"]
+  # cdrom {
+  #   file_id   = var.ROUTER_ISO  # images:iso/vyos-2025.11-generic-amd64.iso
+  #   interface = "ide2"
+  # }
 
-#  lifecycle {
-#    ignore_changes = [
-#      cdrom,
-#      boot_order,
-#      agent,
-#    ]
-#  }
+  lifecycle {
+    ignore_changes = [
+      cdrom,
+      boot_order,
+      agent,
+    ]
+  }
+}
+
+# -------------------------
+# WordPress LXCs - VLAN20
+# -------------------------
+module "richweb" {
+  source    = "./modules/wp-lxc"
+  hostname  = "richweb"
+  vmid      = 210
+  ip        = "10.20.0.10"
+}
+
+module "petitsanglais" {
+  source    = "./modules/wp-lxc"
+  hostname  = "petitsanglais"
+  vmid      = 211
+  ip        = "10.20.0.11"
+}
+
+module "esperance" {
+  source    = "./modules/wp-lxc"
+  hostname  = "esperance"
+  vmid      = 212
+  ip        = "10.20.0.12"
 }

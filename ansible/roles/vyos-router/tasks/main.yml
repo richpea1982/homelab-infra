@@ -12,6 +12,16 @@
     save: true
 
 # ----------------------------------------
+# VLAN TRUNK - remove IP from parent interface
+# if manually assigned during bootstrap
+# ----------------------------------------
+- name: Ensure eth1 has no IP address (trunk interface only)
+  vyos.vyos.vyos_config:
+    lines:
+      - delete interfaces ethernet eth1 address
+    save: true
+
+# ----------------------------------------
 # VLAN SUB-INTERFACES
 # ----------------------------------------
 - name: Configure VLAN10 - Management (10.10.0.0/24)
