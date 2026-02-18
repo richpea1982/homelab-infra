@@ -2,6 +2,11 @@
 - name: Configure VyOS router
   hosts: router
   gather_facts: false
+  connection: network_cli
+  vars:
+    ansible_network_os: vyos.vyos.vyos
+    ansible_become: true
+    ansible_become_method: sudo
   vars_files:
     - ../group_vars/all/vault.yml
   roles:
