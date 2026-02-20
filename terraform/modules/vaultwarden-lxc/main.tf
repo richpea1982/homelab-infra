@@ -56,7 +56,7 @@ resource "proxmox_virtual_environment_container" "vaultwarden_lxc" {
 
   features {
     nesting = true
-    keyctl  = true
-    fuse    = true
+#    keyctl  = true
+#    fuse    = true
   }
 }
