@@ -1,0 +1,40 @@
+- name: Create PBS datastore
+  command: >
+    proxmox-backup-manager datastore create pbs-main /backups/pbs
+  register: datastore_result
+  failed_when: datastore_result.rc != 0 and 'already exists' not in datastore_result.stderr
+  changed_when: datastore_result.rc == 0
+
+- name: Set retention policy on datastore
+  command: >
+    proxmox-backup-manager datastore update pbs-main
+    --keep-daily 4
+    --keep-weekly 3
+    --keep-monthly 2
+  changed_when: true
+
+- name: Create Proxmox backup user
+  command: >
+    proxmox-backup-manager user create proxmox@pbs
+    --password "{{ pbs_user_password }}"
+  register: user_result
+  failed_when: user_result.rc != 0 and 'already exists' not in user_result.stderr
+  changed_when: user_result.rc == 0
+
+- name: Grant datastore permissions to proxmox user
+  command: >
+    proxmox-backup-manager acl update /datastore/pbs-main DatastoreBackup
+    --auth-id proxmox@pbs
+  changed_when: true
+
+- name: Create API token for proxmox user
+  command: >
+    proxmox-backup-manager user generate-token proxmox@pbs ansible
+  register: token_result
+  failed_when: token_result.rc != 0 and 'already exists' not in token_result.stderr
+  changed_when: token_result.rc == 0
+
+- name: Show API token
+  debug:
+    msg: "{{ token_result.stdout }}"
+  when: token_result.rc == 0
