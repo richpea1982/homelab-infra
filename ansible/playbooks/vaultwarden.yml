@@ -3,7 +3,7 @@
   vars_files:
     - ../group_vars/all/apps-vault.yml
     - ../group_vars/all/domains.yml
-    - ../group_vars/all/sevices.yml
+    - ../group_vars/all/services.yml
   roles:
     - common
     - vaultwarden
