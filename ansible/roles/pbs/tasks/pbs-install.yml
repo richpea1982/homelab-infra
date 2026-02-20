@@ -4,11 +4,16 @@
     dest: /etc/apt/trusted.gpg.d/proxmox-release-trixie.gpg
     mode: '0644'
 
-- name: Add PBS repository
+- name: Add PBS no-subscription repository
   apt_repository:
     repo: "deb http://download.proxmox.com/debian/pbs trixie pbs-no-subscription"
     state: present
     filename: pbs
+
+- name: Remove enterprise repository if present
+  file:
+    path: /etc/apt/sources.list.d/pbs-enterprise.list
+    state: absent
 
 - name: Update apt cache
   apt:
