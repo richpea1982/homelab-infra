@@ -193,6 +193,7 @@ services:
       - "{{ petitsanglais_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
+    cloudflare_zone: "petitsanglaisabeziers.fr"
     ip: "10.20.0.11"
 
   esperance:
@@ -200,12 +201,13 @@ services:
       - "{{ esperanceorg_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
+    cloudflare_zone: "egliseesperanceagde.org"
     ip: "10.20.0.12"
 
-  hantaweb:
+hantaweb:
     domains:
       - "{{ hantaweb_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
+    cloudflare_zone: "hartkenci-elle.com"
     ip: "10.20.0.13"
-
