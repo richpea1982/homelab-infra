@@ -6,24 +6,33 @@ http:
         - websecure
       service: api@internal
       tls: {}
-      middlewares:
-        - security-chain
-
-{% for name, site in wordpress_sites.items() %}
+{% for name, svc in services.items() %}
+{%   if svc.ip is defined %}
     wp-{{ name }}:
-      rule: "Host(`{{ site.domain }}`)"
+      rule: "Host(`{{ svc.domains | first }}`)"
       entryPoints:
         - websecure
       service: wp-{{ name }}
       tls: {}
-
+{%   endif %}
 {% endfor %}
+    vaultwarden:
+      rule: "Host(`{{ vault_domain }}`)"
+      entryPoints:
+        - websecure
+      service: vaultwarden
+      tls: {}
 
   services:
-{% for name, site in wordpress_sites.items() %}
+{% for name, svc in services.items() %}
+{%   if svc.ip is defined %}
     wp-{{ name }}:
       loadBalancer:
         servers:
-          - url: "http://{{ site.ip }}"
-
+          - url: "http://{{ svc.ip }}"
+{%   endif %}
 {% endfor %}
+    vaultwarden:
+      loadBalancer:
+        servers:
+          - url: "http://10.40.0.10:8080"
