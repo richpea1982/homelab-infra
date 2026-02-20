@@ -181,7 +181,7 @@ services:
 
   # ------ WP-SITES ----------------
 
-richweb:
+  richweb:
     domains:
       - "{{ richweb_domain }}"
     cloudflared_enabled: true
