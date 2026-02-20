@@ -7,7 +7,7 @@ terraform {
   }
 }
 
-resource "proxmox_virtual_environment_container" "wp_lxc" {
+resource "proxmox_virtual_environment_container" "vaultwarden_lxc" {
   node_name   = var.node
   vm_id       = var.vmid
   description = "WordPress LXC - ${var.hostname}"
