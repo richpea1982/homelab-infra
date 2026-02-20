@@ -1,7 +1,9 @@
 ---
 - hosts: docker-srv
   become: true
+
   vars_files:
-    - ../ansible/group_vars/all/vault.yml
+    - ../group_vars/all/vault.yml
+
   roles:
     - pbs
