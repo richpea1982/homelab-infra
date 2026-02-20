@@ -1,4 +1,5 @@
 ---
 - hosts: docker-srv
+  become: true
   roles:
     - pbs
