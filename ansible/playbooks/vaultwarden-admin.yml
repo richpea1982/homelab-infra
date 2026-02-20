@@ -1,9 +1,10 @@
+---
 - hosts: vaultwarden
   vars_files:
     - ../group_vars/all/apps-vault.yml
     - ../group_vars/all/domains.yml
     - ../group_vars/all/services.yml
-
-  roles:
-    - role: vaultwarden
-      tasks_from: "admin-{{ admin_action }}"
+  tasks:
+    - import_role:
+        name: vaultwarden
+        tasks_from: "admin-{{ admin_action }}"
