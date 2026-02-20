@@ -1,6 +1,6 @@
 - name: Disable admin panel
   lineinfile:
-    path: "{{ vaultwarden_install_dir }}/.env"
+    path: /etc/vaultwarden.env
     regexp: '^ADMIN_TOKEN='
     state: absent
   notify: restart vaultwarden

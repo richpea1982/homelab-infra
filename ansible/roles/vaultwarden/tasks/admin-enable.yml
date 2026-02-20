@@ -1,6 +1,6 @@
 - name: Enable admin panel
   lineinfile:
-    path: "{{ vaultwarden_install_dir }}/.env"
+    path: /etc/vaultwarden.env
     regexp: '^ADMIN_TOKEN='
     line: "ADMIN_TOKEN={{ vaultwarden_admin_token }}"
     state: present
