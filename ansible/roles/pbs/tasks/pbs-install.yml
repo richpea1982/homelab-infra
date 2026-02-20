@@ -12,7 +12,7 @@
 
 - name: Remove enterprise repository if present
   file:
-    path: /etc/apt/sources.list.d/pbs-enterprise.list
+    path: /etc/apt/sources.list.d/pbs-enterprise.sources
     state: absent
 
 - name: Update apt cache
