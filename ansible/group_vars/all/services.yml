@@ -181,11 +181,13 @@ services:
 
   # ------ WP-SITES ----------------
 
-  richweb:
+richweb:
     domains:
       - "{{ richweb_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
+    cloudflared_origin_verify: false
+    cloudflare_zone: "{{ root_domain }}"
     ip: "10.20.0.10"
 
   petitsanglais:
@@ -193,6 +195,7 @@ services:
       - "{{ petitsanglais_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
+    cloudflared_origin_verify: false
     cloudflare_zone: "petitsanglaisabeziers.fr"
     ip: "10.20.0.11"
 
@@ -201,13 +204,15 @@ services:
       - "{{ esperanceorg_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
+    cloudflared_origin_verify: false
     cloudflare_zone: "egliseesperanceagde.org"
     ip: "10.20.0.12"
 
-hantaweb:
+  hantaweb:
     domains:
       - "{{ hantaweb_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
+    cloudflared_origin_verify: false
     cloudflare_zone: "hartkenci-elle.com"
     ip: "10.20.0.13"
