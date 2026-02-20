@@ -45,7 +45,7 @@ resource "proxmox_virtual_environment_container" "wp_lxc" {
 
   network_interface {
     name    = "eth0"
-    bridge  = "vmbr1"
+    bridge  = "vmbr0"
     vlan_id = 20
   }
 

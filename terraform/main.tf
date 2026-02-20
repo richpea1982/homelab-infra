@@ -64,8 +64,9 @@ resource "proxmox_virtual_environment_vm" "router" {
   # VyOS will create sub-interfaces: eth1.10, eth1.20, eth1.30, eth1.40
   network_device {
     model       = "virtio"
-    bridge      = "vmbr1"
+    bridge      = "vmbr0"
     mac_address = "BC:24:11:DB:87:71"
+    trunks      = "10;20;30;40;50;60;70"
   }
 
   # -------------------------
