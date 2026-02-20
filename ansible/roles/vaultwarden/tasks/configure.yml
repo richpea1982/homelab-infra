@@ -1,9 +1,9 @@
 - name: Deploy vaultwarden environment config
   template:
     src: vaultwarden.env.j2
-    dest: "{{ vaultwarden_install_dir }}/.env"
-    owner: "{{ vaultwarden_user }}"
-    group: "{{ vaultwarden_group }}"
+    dest: /etc/vaultwarden.env
+    owner: vaultwarden
+    group: vaultwarden
     mode: '0640'
   notify: restart vaultwarden
 
