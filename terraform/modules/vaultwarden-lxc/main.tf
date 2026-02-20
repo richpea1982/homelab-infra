@@ -51,10 +51,12 @@ resource "proxmox_virtual_environment_container" "wp_lxc" {
   network_interface {
     name    = "eth0"
     bridge  = "vmbr0"
-    vlan_id = 20
+    vlan_id = 40
   }
 
   features {
     nesting = true
+    keyctl  = true
+    fuse    = true
   }
 }

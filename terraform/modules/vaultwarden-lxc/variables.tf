@@ -27,22 +27,22 @@ variable "ip" {
 
 variable "gateway" {
   type    = string
-  default = "10.20.0.1"
+  default = "10.40.0.1"
 }
 
 variable "cores" {
   type    = number
-  default = 1
+  default = 2
 }
 
 variable "memory" {
   type    = number
-  default = 1024
+  default = 2048
 }
 
 variable "disk_size" {
   type    = number
-  default = 10
+  default = 15
 }
 
 variable "storage" {

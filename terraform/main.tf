@@ -125,3 +125,13 @@ module "hantaweb" {
   vmid     = 213
   ip       = "10.20.0.13"
 }
+
+#--------------------------
+# Vaultwarden LXC VLAN40
+#--------------------------
+module "vaultwarden" {
+  source   = "./modules/vaultwarden-lxc"
+  hostname = "vaultwarden"
+  vmid     = 410
+  ip       = "10.40.0.10"
+}
