@@ -42,7 +42,7 @@ variable "ROUTER_ISO" {
 
 variable "ROUTER_MEMORY" {
   type    = number
-  default = 1024
+  default = 2048
 }
 
 variable "ROUTER_CORES" {

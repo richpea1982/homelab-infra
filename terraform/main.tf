@@ -118,3 +118,10 @@ module "esperance" {
   vmid      = 212
   ip        = "10.20.0.12"
 }
+
+module "hantaweb" {
+  source   = "./modules/wp-lxc"
+  hostname = "hantaweb"
+  vmid     = 213
+  ip       = "10.20.0.13"
+}

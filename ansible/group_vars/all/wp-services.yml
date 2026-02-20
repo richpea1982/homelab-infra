@@ -29,4 +29,4 @@ wordpress_sites:
     db_user: hantaweb
     db_password: "{{ wp_db_passwords.hantaweb }}"
     ip: "10.20.0.13"
-    cloudflared_enabled: false
+    cloudflared_enabled: true

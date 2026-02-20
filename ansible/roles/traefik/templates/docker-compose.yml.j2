@@ -6,20 +6,16 @@ services:
     container_name: traefik
     restart: always
     user: "0:{{ docker_group_gid }}"
-
     ports:
       - "443:443"
       - "80:80"
       - "8080:8080"
-
     networks:
 {% for net in services.traefik.networks %}
       - {{ net }}
 {% endfor %}
-
     labels:
       - "traefik.enable=true"
-
 {% if services.traefik.traefik_enabled %}
 {% for domain in services.traefik.domains %}
       - "traefik.http.routers.traefik.rule=Host(`{{ domain }}`)"
@@ -29,59 +25,47 @@ services:
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
 {% endfor %}
 {% endif %}
-
     volumes:
-      # Required bind mounts (old working config)
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /opt/traefik/traefik.yml:/traefik.yml:ro
       - /opt/traefik/dynamic:/dynamic:ro
       - /opt/traefik/certs:/certs:ro
       - /opt/traefik/logs:/logs
-
-      # ACME storage (named volume)
 {% for vol in services.traefik.volumes %}
       - {{ vol }}:/data
 {% endfor %}
-
     command:
       - "--configFile=/traefik.yml"
 
   redirect-eglise:
     image: traefik/whoami
     container_name: redirect_eglise
+    networks:
+      - CF_net
     labels:
       - "traefik.enable=true"
-
-      # Router for both domains
+      - "traefik.docker.network=CF_net"
       - "traefik.http.routers.eglise.rule=Host(`egliseesperanceagde.fr`) || Host(`www.egliseesperanceagde.fr`)"
       - "traefik.http.routers.eglise.entrypoints=websecure"
-      - "traefik.http.routers.eglise.tls.certresolver=cloudflare"
-
-      # Redirect middleware
-      - "traefik.http.middlewares.eglise-redirect.redirectregex.regex=^https?://(www\\.)?egliseesperanceagde\\.fr/(.*)"
-      - "traefik.http.middlewares.eglise-redirect.redirectregex.replacement=https://epagde.wixsite.com/esperance34/$$2"
+      - "traefik.http.routers.eglise.tls=true"
+      - "traefik.http.middlewares.eglise-redirect.redirectregex.regex=^https?://(www.)?egliseesperanceagde.fr(.*)"
+      - "traefik.http.middlewares.eglise-redirect.redirectregex.replacement=https://epagde.wixsite.com/esperance34$$2"
       - "traefik.http.middlewares.eglise-redirect.redirectregex.permanent=true"
-
-      # Attach middleware to router
       - "traefik.http.routers.eglise.middlewares=eglise-redirect"
 
   crowdsec:
     image: "{{ services.crowdsec.image }}"
     container_name: crowdsec
     restart: always
-
     networks:
       - crowd_net
-
     ports:
       - "8080"
-
     volumes:
 {% for vol in services.crowdsec.volumes %}
       - {{ vol }}:/var/lib/crowdsec/data
 {% endfor %}
       - /opt/traefik/logs:/var/log/traefik:ro
-
     environment:
       - COLLECTIONS=crowdsecurity/traefik
       - TZ=Europe/Paris
@@ -91,21 +75,16 @@ services:
     image: "{{ services.cf_bouncer.image }}"
     container_name: cf-bouncer
     restart: always
-
     depends_on:
       - crowdsec
-
     entrypoint: >
       /bin/sh -c "sleep 20 && exec /usr/local/bin/crowdsec-cloudflare-bouncer -c /etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml"
-
     networks:
       - crowd_net
-
     volumes:
       - /opt/crowdsec/cf-bouncer/crowdsec-cloudflare-bouncer.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml:ro
 
 {% set all_networks = (services.traefik.networks) | unique %}
-
 networks:
   crowd_net:
     driver: bridge
@@ -118,10 +97,8 @@ networks:
 {% endfor %}
 
 {% set all_volumes = (services.traefik.volumes + services.crowdsec.volumes) | unique %}
-
 volumes:
 {% for vol in all_volumes %}
   {{ vol }}:
     external: true
 {% endfor %}
-
