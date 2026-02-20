@@ -5,13 +5,17 @@
   failed_when: datastore_result.rc != 0 and 'already exists' not in datastore_result.stderr
   changed_when: datastore_result.rc == 0
 
-- name: Set retention policy on datastore
+- name: Create prune job for datastore
   command: >
-    proxmox-backup-manager datastore update pbs-main
+    proxmox-backup-manager prune-job create pbs-main
+    --store pbs-main
     --keep-daily 4
     --keep-weekly 3
     --keep-monthly 2
-  changed_when: true
+    --schedule "daily"
+  register: prune_result
+  failed_when: prune_result.rc != 0 and 'already exists' not in prune_result.stderr
+  changed_when: prune_result.rc == 0
 
 - name: Create Proxmox backup user
   command: >
