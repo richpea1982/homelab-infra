@@ -129,7 +129,8 @@ module "hantaweb" {
   source   = "./modules/wp-lxc"
   hostname = "hantaweb"
   vmid     = 213
-  ip       = "10.20.0.13"  root_password  = var.root_password
+  ip       = "10.20.0.13"
+  root_password  = var.root_password
   ssh_public_key = var.ssh_public_key
 }
 
