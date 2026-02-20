@@ -103,6 +103,8 @@ module "richweb" {
   hostname  = "richweb"
   vmid      = 210
   ip        = "10.20.0.10"
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
 }
 
 module "petitsanglais" {
@@ -110,6 +112,8 @@ module "petitsanglais" {
   hostname  = "petitsanglais"
   vmid      = 211
   ip        = "10.20.0.11"
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
 }
 
 module "esperance" {
@@ -117,13 +121,16 @@ module "esperance" {
   hostname  = "esperance"
   vmid      = 212
   ip        = "10.20.0.12"
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
 }
 
 module "hantaweb" {
   source   = "./modules/wp-lxc"
   hostname = "hantaweb"
   vmid     = 213
-  ip       = "10.20.0.13"
+  ip       = "10.20.0.13"  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
 }
 
 #--------------------------
@@ -134,4 +141,6 @@ module "vaultwarden" {
   hostname = "vaultwarden"
   vmid     = 410
   ip       = "10.40.0.10"
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
 }
