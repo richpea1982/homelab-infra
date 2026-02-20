@@ -19,7 +19,7 @@ resource "proxmox_virtual_environment_container" "wp_lxc" {
 
   user_account {
     password = var.root_password
-    keys     = var.ssh_public_key
+    keys     = [var.ssh_public_key]
   }
 
     ip_config {
