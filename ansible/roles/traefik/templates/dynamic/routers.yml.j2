@@ -6,33 +6,70 @@ http:
         - websecure
       service: api@internal
       tls: {}
+
 {% for name, svc in services.items() %}
-{%   if svc.ip is defined %}
+{%   if svc.domains is defined and svc.domains | length > 0 %}
+
+{#  LXC services without port — WordPress sites #}
+{%     if svc.ip is defined and svc.port is not defined %}
     wp-{{ name }}:
       rule: "Host(`{{ svc.domains | first }}`)"
       entryPoints:
         - websecure
       service: wp-{{ name }}
       tls: {}
-{%   endif %}
-{% endfor %}
-    vaultwarden:
-      rule: "Host(`{{ vault_domain }}`)"
+{%     endif %}
+
+{#  LXC services with port — Vaultwarden etc #}
+{%     if svc.ip is defined and svc.port is defined %}
+    {{ name }}:
+      rule: "Host(`{{ svc.domains | first }}`)"
       entryPoints:
         - websecure
-      service: vaultwarden
+      service: {{ name }}
       tls: {}
+{%     endif %}
+
+{#  Host services — Semaphore etc #}
+{%     if svc.host is defined and svc.port is defined %}
+    {{ name }}:
+      rule: "Host(`{{ svc.domains | first }}`)"
+      entryPoints:
+        - websecure
+      service: {{ name }}
+      tls: {}
+{%     endif %}
+
+{%   endif %}
+{% endfor %}
 
   services:
 {% for name, svc in services.items() %}
-{%   if svc.ip is defined %}
+{%   if svc.domains is defined and svc.domains | length > 0 %}
+
+{#  LXC services without port — WordPress sites #}
+{%     if svc.ip is defined and svc.port is not defined %}
     wp-{{ name }}:
       loadBalancer:
         servers:
           - url: "http://{{ svc.ip }}"
-{%   endif %}
-{% endfor %}
-    vaultwarden:
+{%     endif %}
+
+{#  LXC services with port — Vaultwarden etc #}
+{%     if svc.ip is defined and svc.port is defined %}
+    {{ name }}:
       loadBalancer:
         servers:
-          - url: "http://10.40.0.10:8080"
+          - url: "http://{{ svc.ip }}:{{ svc.port }}"
+{%     endif %}
+
+{#  Host services — Semaphore etc #}
+{%     if svc.host is defined and svc.port is defined %}
+    {{ name }}:
+      loadBalancer:
+        servers:
+          - url: "http://{{ svc.host }}:{{ svc.port }}"
+{%     endif %}
+
+{%   endif %}
+{% endfor %}

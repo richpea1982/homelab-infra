@@ -8,7 +8,7 @@ ingress:
   - hostname: "{{ domain }}"
     service: https://traefik:443
     originRequest:
-      noTLSVerify: {{ not (svc.cloudflared_origin_verify | default(false)) | lower }}
+      noTLSVerify: true
 {%       endfor %}
 {%     endif %}
 {%   endif %}

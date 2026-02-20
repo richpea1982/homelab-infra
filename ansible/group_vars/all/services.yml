@@ -154,8 +154,9 @@ services:
       - "{{ semaphore_domain }}"
     traefik_enabled: false
     cloudflared_enabled: true
-    cloudflared_origin_verify: true
     cloudflare_zone: "{{ root_domain }}"
+    host: "host.docker.internal"
+    port: 3000
 
   vaultwarden:
     domains:
@@ -176,7 +177,7 @@ services:
     domains: []
     traefik_enabled: false
     cloudflared_enabled: false
-    cloudflared_origin_verify: false
+    cloudflared_origin_verify: true
 
   minio:
     image: "minio/minio:latest"
@@ -194,7 +195,7 @@ services:
       - "{{ richweb_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
-    cloudflared_origin_verify: false
+    cloudflared_origin_verify: true
     cloudflare_zone: "{{ root_domain }}"
     ip: "10.20.0.10"
 
@@ -203,7 +204,7 @@ services:
       - "{{ petitsanglais_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
-    cloudflared_origin_verify: false
+    cloudflared_origin_verify: true
     cloudflare_zone: "petitsanglaisabeziers.fr"
     ip: "10.20.0.11"
 
@@ -212,7 +213,7 @@ services:
       - "{{ esperanceorg_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
-    cloudflared_origin_verify: false
+    cloudflared_origin_verify: true
     cloudflare_zone: "egliseesperanceagde.org"
     ip: "10.20.0.12"
 
@@ -221,6 +222,6 @@ services:
       - "{{ hantaweb_domain }}"
     cloudflared_enabled: true
     traefik_enabled: true
-    cloudflared_origin_verify: false
+    cloudflared_origin_verify: true
     cloudflare_zone: "hartkenci-elle.com"
     ip: "10.20.0.13"

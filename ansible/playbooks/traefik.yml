@@ -12,6 +12,6 @@
     - ../group_vars/all/wp-services.yml
 
   roles:
-    - common
-    - cloudflared
+#    - common
+#    - cloudflared
     - traefik
