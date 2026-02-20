@@ -59,3 +59,17 @@ variable "ROUTER_SNIPPET" {
   type    = string
   default = "vyos-user-data.yaml"
 }
+
+#--------------------------
+# LXC Variables
+#--------------------------
+variable "root_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "ssh_public_key" {
+  type      = string
+  sensitive = true
+}
+
