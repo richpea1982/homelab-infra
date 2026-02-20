@@ -3,12 +3,13 @@
     name:
       - wget
       - curl
+      - sudo
     state: present
     update_cache: true
 
 - name: Add vaultwarden-deb repository
   shell: |
-    wget -qO- https://vaultwarden-deb.pages.dev/dists/bookworm/install.sh | bash
+    wget -qO- https://vaultwarden-deb.pages.dev/dists/trixie/install.sh | bash
   args:
     creates: /etc/apt/sources.list.d/vaultwarden.list
 
