@@ -1,0 +1,8 @@
+vaultwarden_version: "1.32.7"
+vaultwarden_user: vaultwarden
+vaultwarden_group: vaultwarden
+vaultwarden_data_dir: /var/lib/vaultwarden
+vaultwarden_install_dir: /opt/vaultwarden
+vaultwarden_domain: "{{ vault_domain }}"
+vaultwarden_port: 8080
+vaultwarden_admin_enabled: false

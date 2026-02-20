@@ -1,0 +1,8 @@
+---
+- hosts: vaultwarden
+  vars_files:
+    - ../group_vars/all/vault.yml
+    - ../group_vars/all/domains.yml
+  roles:
+    - common
+    - vaultwarden

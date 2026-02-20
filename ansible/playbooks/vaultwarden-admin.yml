@@ -1,0 +1,4 @@
+- hosts: vaultwarden
+  roles:
+    - role: vaultwarden
+      tasks_from: "admin-{{ admin_action }}"

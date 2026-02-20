@@ -1,0 +1,16 @@
+[Unit]
+Description=Vaultwarden Password Manager
+After=network.target
+
+[Service]
+User={{ vaultwarden_user }}
+Group={{ vaultwarden_group }}
+EnvironmentFile={{ vaultwarden_install_dir }}/.env
+ExecStart={{ vaultwarden_install_dir }}/vaultwarden
+WorkingDirectory={{ vaultwarden_install_dir }}
+Restart=always
+RestartSec=5
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

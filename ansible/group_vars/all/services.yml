@@ -157,6 +157,14 @@ services:
     cloudflared_origin_verify: true
     cloudflare_zone: "{{ root_domain }}"
 
+  vaultwarden:
+    domains:
+      - "{{ vault_domain }}"
+    cloudflared_enabled: true
+    cloudflared_origin_verify: true
+    cloudflare_zone: "{{ root_domain }}"
+    ip: "10.40.0.10"
+    port: 8080
   # ------ INFRA / TOOLING ---------
 
   terraform:

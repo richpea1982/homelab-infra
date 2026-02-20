@@ -1,0 +1,14 @@
+- name: Enable admin panel
+  lineinfile:
+    path: "{{ vaultwarden_install_dir }}/.env"
+    regexp: '^ADMIN_TOKEN='
+    line: "ADMIN_TOKEN={{ vaultwarden_admin_token }}"
+    state: present
+  notify: restart vaultwarden
+
+- name: Ensure vaultwarden is restarted
+  meta: flush_handlers
+
+- name: Print admin panel URL
+  debug:
+    msg: "Admin panel available at https://{{ vaultwarden_domain }}/admin"

@@ -1,0 +1,13 @@
+- name: Disable admin panel
+  lineinfile:
+    path: "{{ vaultwarden_install_dir }}/.env"
+    regexp: '^ADMIN_TOKEN='
+    state: absent
+  notify: restart vaultwarden
+
+- name: Ensure vaultwarden is restarted
+  meta: flush_handlers
+
+- name: Confirm admin panel disabled
+  debug:
+    msg: "Admin panel disabled — /admin will return 404"
