@@ -1,0 +1,4 @@
+---
+- hosts: docker-srv
+  roles:
+    - pbs
