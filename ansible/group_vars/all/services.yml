@@ -60,7 +60,7 @@ services:
     domains:
       - "{{ grafana_domain }}"
     traefik_enabled: true
-    cloudflared_enabled: true
+    cloudflared_enabled: false
     cloudflared_origin_verify: true
     cloudflare_zone: "{{ root_domain }}"
 
@@ -74,7 +74,7 @@ services:
     domains:
       - "{{ prometheus_domain }}"
     traefik_enabled: true
-    cloudflared_enabled: true
+    cloudflared_enabled: false
     cloudflared_origin_verify: true
     cloudflare_zone: "{{ root_domain }}"
 
@@ -89,7 +89,7 @@ services:
     domains:
       - "{{ loki_domain }}"
     traefik_enabled: true
-    cloudflared_enabled: true
+    cloudflared_enabled: false
     cloudflared_origin_verify: true
     cloudflare_zone: "{{ root_domain }}"
 
@@ -128,7 +128,7 @@ services:
     domains:
       - "{{ dozzle_domain }}"
     traefik_enabled: true
-    cloudflared_enabled: true
+    cloudflared_enabled: false
     cloudflared_origin_verify: true
     cloudflare_zone: "{{ root_domain }}"
 
@@ -153,7 +153,7 @@ services:
     domains:
       - "{{ semaphore_domain }}"
     traefik_enabled: false
-    cloudflared_enabled: true
+    cloudflared_enabled: false
     cloudflare_zone: "{{ root_domain }}"
     host: "host.docker.internal"
     port: 3000
