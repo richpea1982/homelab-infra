@@ -1,0 +1,4 @@
+- name: restart tailscaled
+  systemd:
+    name: tailscaled
+    state: restarted

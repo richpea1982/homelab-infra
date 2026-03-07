@@ -1,0 +1,22 @@
+- name: Install Tailscale via official script
+  shell: |
+    curl -fsSL https://tailscale.com/install.sh | sh
+  args:
+    creates: /usr/bin/tailscale
+
+- name: Enable and start Tailscale service
+  systemd:
+    name: tailscaled
+    enabled: true
+    state: started
+
+- name: Connect to Tailscale network
+  command: >
+    tailscale up
+    --authkey={{ tailscale_auth_key }}
+    --hostname={{ inventory_hostname }}
+    {% if tailscale_exit_node %}--advertise-exit-node{% endif %}
+    {% if tailscale_advertise_routes | length > 0 %}--advertise-routes={{ tailscale_advertise_routes | join(',') }}{% endif %}
+  register: tailscale_up
+  changed_when: tailscale_up.rc == 0
+  failed_when: tailscale_up.rc != 0 and 'already' not in tailscale_up.stderr

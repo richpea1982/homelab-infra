@@ -1,0 +1,9 @@
+---
+- hosts:
+    - docker-srv
+    - proxmox-srv
+  become: true
+  vars_files:
+    - ../group_vars/all/vault.yml
+  roles:
+    - tailscale
