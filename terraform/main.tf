@@ -152,7 +152,7 @@ module "vaultwarden" {
 module "adguard" {
   source         = "./modules/lxc"
   hostname       = "adguard"
-  vmid           = 120
+  vmid           = 102
   ip             = "10.10.0.2"
   gateway        = "10.10.0.1"
   vlan_id        = 10
