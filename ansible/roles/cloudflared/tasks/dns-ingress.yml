@@ -17,7 +17,35 @@
   loop_control:
     loop_var: item
   when: item.0.value.cloudflared_enabled
+- name: Build DNS records for disabled services
+  set_fact:
+    cf_dns_records_disabled: "{{ cf_dns_records_disabled | default([]) + [{
+        'service_key': item.0.key,
+        'service': item.0.value.service,
+        'domain': item.1
+    }] }}"
+  loop: "{{ normalized_services | dict2items | subelements('value.domains') }}"
+  loop_control:
+    loop_var: item
+  when: not item.0.value.cloudflared_enabled and item.1 != ''
 
+- name: Remove DNS records for disabled services
+  community.general.cloudflare_dns:
+    zone: "{{ item.service.cloudflare_zone | default(primary_domain) }}"
+    record: >-
+      {{
+        item.domain
+        | regex_replace('\\.' ~ (item.service.cloudflare_zone | default(primary_domain)) ~ '$', '')
+        | trim('.')
+        | default('@')
+      }}
+    type: CNAME
+    api_token: "{{ CLOUDFLARE_API_DNS_TOKEN }}"
+    state: absent
+  loop: "{{ cf_dns_records_disabled | default([]) }}"
+  loop_control:
+    label: "Remove DNS {{ item.domain }}"
+    pause: 2
 # ---------------------------------------------------------
 # 2. Create DNS records
 # ---------------------------------------------------------
