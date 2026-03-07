@@ -51,3 +51,48 @@
       - set interfaces ethernet eth1 vif 40 address 10.40.0.1/24
       - set interfaces ethernet eth1 vif 40 description Vaultwarden
     save: true
+# ----------------------------------------
+# FIREWALL RULES
+# ----------------------------------------
+- name: Allow established/related connections
+  vyos.vyos.vyos_config:
+    lines:
+      - set firewall ipv4 forward filter rule 5 action accept
+      - set firewall ipv4 forward filter rule 5 state established
+      - set firewall ipv4 forward filter rule 5 state related
+      - set firewall ipv4 forward filter rule 5 description 'Allow established/related connections'
+    save: true
+
+- name: Allow ISP to internal networks
+  vyos.vyos.vyos_config:
+    lines:
+      - set firewall ipv4 forward filter rule 10 action accept
+      - set firewall ipv4 forward filter rule 10 source address 192.168.1.0/24
+      - set firewall ipv4 forward filter rule 10 destination address 10.0.0.0/8
+    save: true
+
+- name: Allow internal networks to ISP
+  vyos.vyos.vyos_config:
+    lines:
+      - set firewall ipv4 forward filter rule 20 action accept
+      - set firewall ipv4 forward filter rule 20 source address 10.0.0.0/8
+      - set firewall ipv4 forward filter rule 20 destination address 192.168.1.0/24
+    save: true
+
+- name: Allow Traefik to reach WordPress LXCs
+  vyos.vyos.vyos_config:
+    lines:
+      - set firewall ipv4 forward filter rule 25 action accept
+      - set firewall ipv4 forward filter rule 25 source address 10.10.0.11
+      - set firewall ipv4 forward filter rule 25 destination address 10.20.0.0/24
+      - set firewall ipv4 forward filter rule 25 description 'Allow Traefik to reach WordPress LXCs'
+    save: true
+
+- name: Block WordPress LXCs from reaching management network
+  vyos.vyos.vyos_config:
+    lines:
+      - set firewall ipv4 forward filter rule 30 action drop
+      - set firewall ipv4 forward filter rule 30 source address 10.20.0.0/24
+      - set firewall ipv4 forward filter rule 30 destination address 10.10.0.0/24
+      - set firewall ipv4 forward filter rule 30 description 'Block WordPress to Management'
+    save: true
