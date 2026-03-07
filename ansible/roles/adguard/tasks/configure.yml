@@ -1,0 +1,22 @@
+- name: Stop AdGuard Home before config deploy
+  systemd:
+    name: AdGuardHome
+    state: stopped
+
+- name: Create data directory
+  file:
+    path: "{{ adguard_data_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Deploy AdGuard Home config
+  template:
+    src: AdGuardHome.yaml.j2
+    dest: "{{ adguard_install_dir }}/AdGuardHome.yaml"
+    mode: '0644'
+  notify: restart adguard
+
+- name: Start AdGuard Home
+  systemd:
+    name: AdGuardHome
+    state: started

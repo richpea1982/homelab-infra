@@ -225,3 +225,10 @@ services:
     cloudflared_origin_verify: true
     cloudflare_zone: "hartkenci-elle.com"
     ip: "10.20.0.13"
+
+  adguard:
+    domains:
+      - "{{ adguard_domain }}"
+    cloudflared_enabled: false
+    ip: "10.10.0.2"
+    port: 3000

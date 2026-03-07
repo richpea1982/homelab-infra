@@ -1,0 +1,6 @@
+adguard_version: "v0.107.57"
+adguard_install_dir: /opt/AdGuardHome
+adguard_data_dir: /opt/AdGuardHome/data
+adguard_port_dns: 53
+adguard_port_ui: 3000
+adguard_admin_user: admin

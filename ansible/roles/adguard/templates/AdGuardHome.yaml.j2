@@ -1,0 +1,75 @@
+http:
+  pprof:
+    port: 6060
+    enabled: false
+  address: 0.0.0.0:{{ adguard_port_ui }}
+  session_ttl: 720h
+users:
+  - name: "{{ adguard_admin_user }}"
+    password: "{{ adguard_admin_password_hash }}"
+auth_attempts: 5
+block_auth_min: 15
+dns:
+  bind_hosts:
+    - 0.0.0.0
+  port: {{ adguard_port_dns }}
+  upstream_dns:
+    - 1.1.1.1
+    - 8.8.8.8
+  bootstrap_dns:
+    - 1.1.1.1
+    - 8.8.8.8
+  fallback_dns:
+    - 1.1.1.1
+  rewrites:
+    - domain: proxmox-srv.lan
+      answer: 10.10.0.12
+    - domain: docker-srv.lan
+      answer: 10.10.0.11
+    - domain: vyos.lan
+      answer: 10.10.0.1
+    - domain: adguard.lan
+      answer: 10.10.0.2
+    - domain: vaultwarden.lan
+      answer: 10.40.0.10
+    - domain: pbs.lan
+      answer: 10.10.0.11
+    - domain: semaphore.lan
+      answer: 10.10.0.11
+    - domain: richweb.lan
+      answer: 10.20.0.10
+    - domain: petitsanglais.lan
+      answer: 10.20.0.11
+    - domain: esperance.lan
+      answer: 10.20.0.12
+    - domain: hantaweb.lan
+      answer: 10.20.0.13
+  filtering:
+    enabled: true
+    update_interval: 24h
+  parental:
+    enabled: false
+  safesearch:
+    enabled: false
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
+    name: AdGuard DNS filter
+    id: 1
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
+    name: AdAway Default Blocklist
+    id: 2
+  - enabled: true
+    url: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+    name: Steven Black Unified
+    id: 3
+log:
+  file: ""
+  max_backups: 0
+  max_size: 100
+  max_age: 3
+  compress: false
+  local_time: false
+  verbose: false
+schema_version: 29

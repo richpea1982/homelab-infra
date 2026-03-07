@@ -1,0 +1,20 @@
+- name: Install dependencies
+  apt:
+    name:
+      - curl
+      - ca-certificates
+    state: present
+    update_cache: true
+
+- name: Install AdGuard Home via official script
+  shell: |
+    wget --no-verbose -O /tmp/adguard-install.sh https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh
+    sh /tmp/adguard-install.sh -s -- -v
+  args:
+    creates: /opt/AdGuardHome/AdGuardHome
+
+- name: Enable and start AdGuard Home
+  systemd:
+    name: AdGuardHome
+    enabled: true
+    state: started

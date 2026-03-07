@@ -1,0 +1,6 @@
+---
+- hosts: adguard
+  become: true
+  roles:
+    - common
+    - adguard
