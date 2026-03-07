@@ -9,7 +9,7 @@
 - name: Install AdGuard Home via official script
   shell: |
     wget --no-verbose -O /tmp/adguard-install.sh https://raw.githubusercontent.com/AdguardTeam/AdGuardHome/master/scripts/install.sh
-    sh /tmp/adguard-install.sh -s -- -v
+    sh /tmp/adguard-install.sh -v
   args:
     creates: /opt/AdGuardHome/AdGuardHome
 
