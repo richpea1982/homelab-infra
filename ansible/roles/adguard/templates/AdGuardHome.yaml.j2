@@ -9,6 +9,9 @@ users:
     password: "{{ adguard_admin_password_hash }}"
 auth_attempts: 5
 block_auth_min: 15
+http_proxy: ""
+language: ""
+theme: auto
 dns:
   bind_hosts:
     - 0.0.0.0
@@ -21,6 +24,42 @@ dns:
     - 8.8.8.8
   fallback_dns:
     - 1.1.1.1
+  upstream_mode: load_balance
+  cache_enabled: true
+  cache_size: 4194304
+  serve_plain_dns: true
+  hostsfile_enabled: true
+tls:
+  enabled: false
+querylog:
+  interval: 2160h
+  size_memory: 1000
+  enabled: true
+  file_enabled: true
+statistics:
+  interval: 24h
+  enabled: true
+filters:
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
+    name: AdGuard DNS filter
+    id: 1
+  - enabled: true
+    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
+    name: AdAway Default Blocklist
+    id: 2
+  - enabled: true
+    url: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+    name: Steven Black Unified
+    id: 3
+whitelist_filters: []
+user_rules: []
+dhcp:
+  enabled: false
+  interface_name: ""
+  local_domain_name: lan
+filtering:
+  blocking_mode: default
   rewrites:
     - domain: proxmox-srv.lan
       answer: 10.10.0.12
@@ -44,27 +83,14 @@ dns:
       answer: 10.20.0.12
     - domain: hantaweb.lan
       answer: 10.20.0.13
-  filtering:
-    enabled: true
-    update_interval: 24h
-  parental:
-    enabled: false
-  safesearch:
-    enabled: false
-filters:
-  - enabled: true
-    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt
-    name: AdGuard DNS filter
-    id: 1
-  - enabled: true
-    url: https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt
-    name: AdAway Default Blocklist
-    id: 2
-  - enabled: true
-    url: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-    name: Steven Black Unified
-    id: 3
+  rewrites_enabled: true
+  filtering_enabled: true
+  parental_enabled: false
+  safebrowsing_enabled: false
+  protection_enabled: true
+  filters_update_interval: 24
 log:
+  enabled: true
   file: ""
   max_backups: 0
   max_size: 100
@@ -72,4 +98,8 @@ log:
   compress: false
   local_time: false
   verbose: false
-schema_version: 29
+os:
+  group: ""
+  user: ""
+  rlimit_nofile: 0
+schema_version: 33
