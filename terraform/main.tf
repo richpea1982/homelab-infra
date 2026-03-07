@@ -145,3 +145,20 @@ module "vaultwarden" {
   root_password  = var.root_password
   ssh_public_key = var.ssh_public_key
 }
+
+# -------------------------
+# AdGuard LXC - VLAN10
+# -------------------------
+module "adguard" {
+  source         = "./modules/lxc"
+  hostname       = "adguard"
+  vmid           = 120
+  ip             = "10.10.0.2"
+  gateway        = "10.10.0.1"
+  vlan_id        = 10
+  cores          = 2
+  memory         = 1024
+  disk_size      = 8
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
+}
