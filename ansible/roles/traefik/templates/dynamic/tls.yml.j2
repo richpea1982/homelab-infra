@@ -1,9 +1,6 @@
-http:
-  routers:
-    traefik-dashboard:
-      rule: "Host(`traefik.pearsalls.online`)"
-      entryPoints:
-        - websecure
-      service: api@internal
-      tls: {}
-
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/origin.pem
+        keyFile: /certs/origin.key

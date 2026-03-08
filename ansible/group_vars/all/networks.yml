@@ -19,10 +19,6 @@ docker_networks:
     driver: bridge
     attachable: true
 
-  # esperancefr_net:
-  #   driver: bridge
-  #   attachable: true
-  #
   esperance_net:
    driver: bridge
    attachable: true
@@ -34,10 +30,6 @@ docker_networks:
   richweb_net:
     driver: bridge
     attachable: true
-
-  # hantaweb_net:
-  #   driver: bridge
-  #   attachable: true
 
   apps_net:
     driver: bridge
