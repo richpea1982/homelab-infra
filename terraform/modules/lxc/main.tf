@@ -58,9 +58,3 @@ resource "proxmox_virtual_environment_container" "lxc" {
     nesting = true
   }
 
-  # ✔ REAL, SUPPORTED LXC MOUNT BLOCK
-  mount_point {
-    mp     = var.mount_mp
-    source = var.mount_source
-  }
-}

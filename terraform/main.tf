@@ -180,8 +180,8 @@ module "immich" {
   disk_size      = 12
   root_password  = var.root_password
   ssh_public_key = var.ssh_public_key
-  mount_mp       = "/mnt/photos"
-  mount_source   = "/storage/Photos"
+  volume         = "/mnt/photos"
+  path           = "/storage/Photos"
 }
 
 module "seafile" {
@@ -196,8 +196,8 @@ module "seafile" {
   disk_size      = 12
   root_password  = var.root_password
   ssh_public_key = var.ssh_public_key
-  mount_mp       = "/mnt/storage"
-  mount_source   = "/storage/file-share"
+  volume         = "/mnt/storage"
+  path           = "/storage/file-share"
 }
 
 
@@ -213,8 +213,8 @@ module "stirlingpdf" {
   disk_size      = 12
   root_password  = var.root_password
   ssh_public_key = var.ssh_public_key
-  mount_mp       = "/mnt/storage"
-  mount_source   = "/storage/file-share/stirlingpdf"
+  volume         = "/mnt/storage"
+  path           = "/storage/file-share/stirlingpdf"
 }
 
 
