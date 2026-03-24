@@ -66,7 +66,6 @@ resource "proxmox_virtual_environment_container" "lxc" {
       mp      = var.mount_mp
       source  = var.mount_source
       type    = var.mount_type
-      options = var.mount_options
     }
   }
 }

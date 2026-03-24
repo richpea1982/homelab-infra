@@ -80,7 +80,3 @@ variable "mount_type" {
   default = "bind"
 }
 
-variable "mount_options" {
-  type    = string
-  default = "rw"
-}
