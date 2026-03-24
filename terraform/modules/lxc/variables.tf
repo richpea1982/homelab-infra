@@ -65,12 +65,12 @@ variable "fuse" {
   type    = bool
   default = false
 }
-variable "mount_mp" {
+variable "mount_volume" {
   type    = string
   default = null
 }
 
-variable "mount_source" {
+variable "mount_path" {
   type    = string
   default = null
 }
