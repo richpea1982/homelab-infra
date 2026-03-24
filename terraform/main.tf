@@ -96,6 +96,23 @@ resource "proxmox_virtual_environment_vm" "router" {
 }
 
 # -------------------------
+# AdGuard LXC - VLAN10
+# -------------------------
+module "adguard" {
+  source         = "./modules/lxc"
+  hostname       = "adguard"
+  vmid           = 102
+  ip             = "10.10.0.2"
+  gateway        = "10.10.0.1"
+  vlan_id        = 10
+  cores          = 2
+  memory         = 1024
+  disk_size      = 8
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
+}
+
+# -------------------------
 # WordPress LXCs - VLAN20
 # -------------------------
 module "richweb" {
@@ -135,6 +152,94 @@ module "hantaweb" {
 }
 
 #--------------------------
+# APPS LXC VLAN30
+#--------------------------
+#module "jellyfin" {
+#  source         = "./modules/lxc"
+#  hostname       = "jellyfin"
+#  vmid           = 310
+#  ip             = "10.30.0.10"
+#  gateway        = "10.30.0.1"
+#  vlan_id        = 30
+#  cores          = 2
+#  memory         = 4096
+#  disk_size      = 15
+#  root_password  = var.root_password
+#  ssh_public_key = var.ssh_public_key
+#}
+
+module "immich" {
+  source         = "./modules/lxc"
+  hostname       = "immich"
+  vmid           = 311
+  ip             = "10.30.0.11"
+  gateway        = "10.30.0.1"
+  vlan_id        = 30
+  cores          = 3
+  memory         = 8192
+  disk_size      = 12
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
+
+  mounts = [
+    {
+      mp      = "/mnt/photos"
+      source  = "/storage/Photos"
+      type    = "bind"
+      options = "rw"
+    }
+  ]
+}
+
+module "seafile" {
+  source         = "./modules/lxc"
+  hostname       = "seafile"
+  vmid           = 312
+  ip             = "10.30.0.12"
+  gateway        = "10.30.0.1"
+  vlan_id        = 30
+  cores          = 2
+  memory         = 2048
+  disk_size      = 12
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
+
+  mounts = [
+    {
+      mp      = "/mnt/storage"
+      source  = "/storage/file-share"
+      type    = "bind"
+      options = "rw"
+    }
+  ]
+}
+
+
+module "stirlingpdf" {
+  source         = "./modules/lxc"
+  hostname       = "stirlingpdf"
+  vmid           = 313
+  ip             = "10.30.0.13"
+  gateway        = "10.30.0.1"
+  vlan_id        = 30
+  cores          = 2
+  memory         = 2048
+  disk_size      = 12
+  root_password  = var.root_password
+  ssh_public_key = var.ssh_public_key
+
+  mounts = [
+    {
+      mp      = "/mnt/storage"
+      source  = "/storage/file-share/stirlingpdf"
+      type    = "bind"
+      options = "rw"
+    }
+  ]
+}
+
+
+#--------------------------
 # Vaultwarden LXC VLAN40
 #--------------------------
 module "vaultwarden" {
@@ -146,19 +251,3 @@ module "vaultwarden" {
   ssh_public_key = var.ssh_public_key
 }
 
-# -------------------------
-# AdGuard LXC - VLAN10
-# -------------------------
-module "adguard" {
-  source         = "./modules/lxc"
-  hostname       = "adguard"
-  vmid           = 102
-  ip             = "10.10.0.2"
-  gateway        = "10.10.0.1"
-  vlan_id        = 10
-  cores          = 2
-  memory         = 1024
-  disk_size      = 8
-  root_password  = var.root_password
-  ssh_public_key = var.ssh_public_key
-}

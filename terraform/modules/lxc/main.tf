@@ -60,3 +60,13 @@ resource "proxmox_virtual_environment_container" "lxc" {
     fuse    = var.fuse
   }
 }
+
+dynamic "mount_point" {
+  for_each = var.mounts
+  content {
+    mp      = mount_point.value.mp
+    source  = mount_point.value.source
+    type    = mount_point.value.type
+    options = mount_point.value.options
+  }
+}
