@@ -7,15 +7,6 @@ terraform {
   }
 }
 
-terraform {
-  required_providers {
-    proxmox = {
-      source  = "bpg/proxmox"
-      version = "0.94.0"
-    }
-  }
-}
-
 resource "proxmox_virtual_environment_container" "lxc" {
   node_name    = var.node
   vm_id        = var.vmid
