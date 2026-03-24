@@ -75,8 +75,3 @@ variable "mount_source" {
   default = null
 }
 
-variable "mount_type" {
-  type    = string
-  default = "bind"
-}
-
