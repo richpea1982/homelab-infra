@@ -67,11 +67,10 @@ variable "fuse" {
 }
 variable "mount_volume" {
   type    = string
-  default = null
+  default = "none"
 }
 
 variable "mount_path" {
   type    = string
-  default = null
+  default = ""
 }
-
