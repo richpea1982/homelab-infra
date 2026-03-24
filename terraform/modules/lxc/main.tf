@@ -13,7 +13,7 @@ resource "proxmox_virtual_environment_container" "lxc" {
   description  = "${var.hostname} LXC"
   started      = true
   unprivileged = true
-
+  }
   initialization {
     hostname = var.hostname
 
