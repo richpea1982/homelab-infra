@@ -63,7 +63,7 @@ EOF
 
   features {
     nesting = true
-    keyctl  = var.keyctl
-    fuse    = var.fuse
+#    keyctl  = var.keyctl
+#    fuse    = var.fuse
   }
 }
