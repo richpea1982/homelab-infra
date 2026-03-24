@@ -6,6 +6,7 @@ terraform {
     }
   }
 }
+
 resource "proxmox_virtual_environment_container" "lxc" {
   node_name   = var.node
   vm_id       = var.vmid
@@ -59,12 +60,12 @@ resource "proxmox_virtual_environment_container" "lxc" {
     fuse    = var.fuse
   }
 
-  # Optional mount point — now correctly inside the resource
+  ### THIS MUST BE INSIDE THE RESOURCE
   dynamic "mount_point" {
     for_each = var.mount_mp != null && var.mount_source != null ? [1] : []
     content {
-      mp      = var.mount_mp
-      source  = var.mount_source
+      mp     = var.mount_mp
+      source = var.mount_source
     }
   }
 }
