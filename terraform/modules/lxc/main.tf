@@ -30,6 +30,13 @@ resource "proxmox_virtual_environment_container" "lxc" {
     }
   }
 
+ # Add this:
+  user_data = <<EOF
+#!/bin/bash
+pct set ${var.vmid} -mp0 ${var.mount_source},mp=${var.mount_mp}
+EOF
+}
+
   cpu {
     cores = var.cores
   }
@@ -59,12 +66,4 @@ resource "proxmox_virtual_environment_container" "lxc" {
     keyctl  = var.keyctl
     fuse    = var.fuse
   }
-}
-
-# ---------------------------------------------------------
-# ADD THE MOUNT POINT AFTER THE RESOURCE USING pct set
-# ---------------------------------------------------------
-provisioner "local-exec" {
-  when    = create
-  command = "pct set ${proxmox_virtual_environment_container.lxc.vm_id} -mp0 ${var.mount_source},mp=${var.mount_mp}"
 }
