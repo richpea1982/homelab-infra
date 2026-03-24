@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    proxmox = {
-      source  = "bpg/proxmox"
-      version = "0.94.0"
-    }
-  }
-}
-
 resource "proxmox_virtual_environment_container" "lxc" {
   node_name   = var.node
   vm_id       = var.vmid
@@ -17,10 +8,10 @@ resource "proxmox_virtual_environment_container" "lxc" {
   initialization {
     hostname = var.hostname
 
-  user_account {
-    password = var.root_password
-    keys     = [var.ssh_public_key]
-  }
+    user_account {
+      password = var.root_password
+      keys     = [var.ssh_public_key]
+    }
 
     ip_config {
       ipv4 {
@@ -59,16 +50,15 @@ resource "proxmox_virtual_environment_container" "lxc" {
     keyctl  = var.keyctl
     fuse    = var.fuse
   }
-}
 
-# Optional mount point
-# Only added if mount_mp and mount_source are provided
-dynamic "mount_point" {
-  for_each = var.mount_mp != null && var.mount_source != null ? [1] : []
-  content {
-    mp      = var.mount_mp
-    source  = var.mount_source
-    type    = var.mount_type
-    options = var.mount_options
+  # Optional mount point — now correctly inside the resource
+  dynamic "mount_point" {
+    for_each = var.mount_mp != null && var.mount_source != null ? [1] : []
+    content {
+      mp      = var.mount_mp
+      source  = var.mount_source
+      type    = var.mount_type
+      options = var.mount_options
+    }
   }
 }
