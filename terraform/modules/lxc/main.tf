@@ -13,15 +13,13 @@ resource "proxmox_virtual_environment_container" "lxc" {
   description  = "${var.hostname} LXC"
   started      = true
   unprivileged = true
-  }
+
   initialization {
     hostname = var.hostname
-
     user_account {
       password = var.root_password
       keys     = [var.ssh_public_key]
     }
-
     ip_config {
       ipv4 {
         address = "${var.ip}/24"
@@ -56,5 +54,15 @@ resource "proxmox_virtual_environment_container" "lxc" {
 
   features {
     nesting = true
+    keyctl  = var.keyctl
+    fuse    = var.fuse
   }
 
+  dynamic "mount_point" {
+    for_each = var.mount_path != "" ? [1] : []
+    content {
+      volume = var.mount_volume
+      path   = var.mount_path
+    }
+  }
+}
