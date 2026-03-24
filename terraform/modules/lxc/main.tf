@@ -8,10 +8,10 @@ terraform {
 }
 
 resource "proxmox_virtual_environment_container" "lxc" {
-  node_name   = var.node
-  vm_id       = var.vmid
-  description = "${var.hostname} LXC"
-  started     = true
+  node_name    = var.node
+  vm_id        = var.vmid
+  description  = "${var.hostname} LXC"
+  started      = true
   unprivileged = true
 
   initialization {
@@ -59,13 +59,12 @@ resource "proxmox_virtual_environment_container" "lxc" {
     keyctl  = var.keyctl
     fuse    = var.fuse
   }
+}
 
-  ### THIS MUST BE INSIDE THE RESOURCE
-  dynamic "mount_point" {
-    for_each = var.mount_mp != null && var.mount_source != null ? [1] : []
-    content {
-      mp     = var.mount_mp
-      source = var.mount_source
-    }
-  }
+# ---------------------------------------------------------
+# ADD THE MOUNT POINT AFTER THE RESOURCE USING pct set
+# ---------------------------------------------------------
+provisioner "local-exec" {
+  when    = create
+  command = "pct set ${proxmox_virtual_environment_container.lxc.vm_id} -mp0 ${var.mount_source},mp=${var.mount_mp}"
 }
