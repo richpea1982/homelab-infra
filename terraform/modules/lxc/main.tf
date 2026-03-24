@@ -59,10 +59,11 @@ resource "proxmox_virtual_environment_container" "lxc" {
   }
 
   dynamic "mount_point" {
-    for_each = var.mount_path != "" ? [1] : []
+    for_each = var.mount_path != "" && var.mount_volume != "" ? [1] : []
     content {
       volume = var.mount_volume
       path   = var.mount_path
     }
   }
 }
+
