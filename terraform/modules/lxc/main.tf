@@ -7,6 +7,15 @@ terraform {
   }
 }
 
+terraform {
+  required_providers {
+    proxmox = {
+      source  = "bpg/proxmox"
+      version = "0.94.0"
+    }
+  }
+}
+
 resource "proxmox_virtual_environment_container" "lxc" {
   node_name    = var.node
   vm_id        = var.vmid
@@ -28,14 +37,13 @@ resource "proxmox_virtual_environment_container" "lxc" {
         gateway = var.gateway
       }
     }
-  }
 
- # Add this:
-  user_data = <<EOF
+    # cloud-init script goes INSIDE initialization
+    user_data = <<EOF
 #!/bin/bash
 pct set ${var.vmid} -mp0 ${var.mount_source},mp=${var.mount_mp}
 EOF
-}
+  }
 
   cpu {
     cores = var.cores
@@ -63,7 +71,7 @@ EOF
 
   features {
     nesting = true
-#    keyctl  = var.keyctl
-#    fuse    = var.fuse
+    # keyctl  = var.keyctl
+    # fuse    = var.fuse
   }
 }
