@@ -65,12 +65,22 @@ variable "fuse" {
   type    = bool
   default = false
 }
-variable "mounts" {
-  type = list(object({
-    mp      = string
-    source  = string
-    type    = string
-    options = string
-  }))
-  default = []
+variable "mount_mp" {
+  type    = string
+  default = null
+}
+
+variable "mount_source" {
+  type    = string
+  default = null
+}
+
+variable "mount_type" {
+  type    = string
+  default = "bind"
+}
+
+variable "mount_options" {
+  type    = string
+  default = "rw"
 }

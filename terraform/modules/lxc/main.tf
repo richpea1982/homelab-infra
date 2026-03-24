@@ -61,12 +61,14 @@ resource "proxmox_virtual_environment_container" "lxc" {
   }
 }
 
+# Optional mount point
+# Only added if mount_mp and mount_source are provided
 dynamic "mount_point" {
-  for_each = var.mounts
+  for_each = var.mount_mp != null && var.mount_source != null ? [1] : []
   content {
-    mp      = mount_point.value.mp
-    source  = mount_point.value.source
-    type    = mount_point.value.type
-    options = mount_point.value.options
+    mp      = var.mount_mp
+    source  = var.mount_source
+    type    = var.mount_type
+    options = var.mount_options
   }
 }
