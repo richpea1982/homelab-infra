@@ -170,56 +170,6 @@ module "hantaweb" {
 #  ssh_public_key = var.ssh_public_key
 #}
 
-module "immich" {
-  source         = "./modules/lxc"
-  hostname       = "immich"
-  vmid           = 311
-  ip             = "10.30.0.11"
-  gateway        = "10.30.0.1"
-  vlan_id        = 30
-  cores          = 3
-  memory         = 8192
-  disk_size      = 12
-  root_password  = var.root_password
-  ssh_public_key = var.ssh_public_key
-  mount_volume         = "/storage/Photos"
-  mount_path           = "/mnt/photos"
-}
-
-module "seafile" {
-  source         = "./modules/lxc"
-  hostname       = "seafile"
-  vmid           = 312
-  ip             = "10.30.0.12"
-  gateway        = "10.30.0.1"
-  vlan_id        = 30
-  cores          = 2
-  memory         = 2048
-  disk_size      = 12
-  root_password  = var.root_password
-  ssh_public_key = var.ssh_public_key
-  mount_volume         = "/storage/file-share"
-  mount_path           = "/mnt/storage"
-}
-
-
-module "stirlingpdf" {
-  source         = "./modules/lxc"
-  hostname       = "stirlingpdf"
-  vmid           = 313
-  ip             = "10.30.0.13"
-  gateway        = "10.30.0.1"
-  vlan_id        = 30
-  cores          = 2
-  memory         = 2048
-  disk_size      = 12
-  root_password  = var.root_password
-  ssh_public_key = var.ssh_public_key
-  mount_volume         = "/storage/file-share/stirlingpdf"
-  mount_path           = "/mnt/storage"
-}
-
-
 #--------------------------
 # Vaultwarden LXC VLAN40
 #--------------------------
